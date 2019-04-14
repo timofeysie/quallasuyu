@@ -12,11 +12,33 @@ ng g app todos // create the Angular app
 ng serve todos // start it up
 ng e2e todos-e2e --watch // run the e2e tests
 ng g node-app api --frontendProject=todos // create the node app
-ng serve api // serve the application
-ng build api // build the application
-ng test api // test the application
-ng g lib data
+ng serve api // serve the app
+ng build api // build the app
+ng test api // test the app
+ng g lib data // create shared interfaces
+ng g lib ui // create ui lib
+ng g component todos --project=ui --export
 ```
+restart after ui lib changes
+```
+ng serve api
+ng serve todos
+```
+
+look at what you have changed
+```
+npm run affected:apps -- --base=master
+npm run affected:libs -- --base=master
+run affected:test -- --base=master // retest all the affected projects.
+npm run affected:test -- --base=master --only-failed // retest the failed projects.
+```
+
+ERROR in apps/todos/src/app/app.component.ts(3,22):
+error TS2306: File '...index.ts' is not a module.
+libs/ui/src/lib/todos/todos.component.ts(2,22):
+error TS2306: File '...index.ts' is not a module.
+
+The file is just an interface.  However, it wasn't being exported.  Easy fix.
 
 
 

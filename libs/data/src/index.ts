@@ -1,3 +1,3 @@
-interface Todo {
+export interface Todo {
   title: string;
 }
