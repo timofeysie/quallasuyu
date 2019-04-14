@@ -1,0 +1,3 @@
+interface Todo {
+  title: string;
+}

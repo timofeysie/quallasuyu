@@ -4,7 +4,21 @@ This project was generated using [Nx](https://nx.dev).
 
 <p align="center"><img src="https://raw.githubusercontent.com/nrwl/nx/master/nx-logo.png" width="450"></p>
 
-🔎 **Nx is a set of Angular CLI power-ups for modern development.**
+## Starting out
+
+```
+npx create-nx-workspace myorg // create a new workspace
+ng g app todos // create the Angular app
+ng serve todos // start it up
+ng e2e todos-e2e --watch // run the e2e tests
+ng g node-app api --frontendProject=todos // create the node app
+ng serve api // serve the application
+ng build api // build the application
+ng test api // test the application
+ng g lib data
+```
+
+
 
 ## Quick Start & Documentation
 
