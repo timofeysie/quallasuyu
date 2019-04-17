@@ -14,8 +14,9 @@ describe('AppService', () => {
   });
 
   describe('getData', () => {
-    it('should return "Welcome to api!"', () => {
-      expect(service.getData()).toEqual({message: 'Welcome to api!'});
+    it('should return the default todos', () => {
+      const todos = [{ title: 'Todo 1' }, { title: 'Todo 2' }];
+      expect(service.getData()).toEqual(todos);
     });
   });
 });

@@ -1,5 +1,7 @@
 # Data
 
+This library contains data models to be used in the other projects.
+
 This library was generated with [Angular CLI](https://github.com/angular/angular-cli) version 7.2.0.
 
 ## Code scaffolding
