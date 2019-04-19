@@ -28,6 +28,32 @@ This project was generated using [Nx](https://nx.dev).
 * [Further help](#further-help)
 
 
+## 100 Days of React challenge
+
+Since this is a power-up project, we are using our new nx mono-repo.  So instead of running this line from the [challeng](https://scotch.io/tutorials/build-a-mini-netflix-with-react-in-10-minutes):
+```
+create-react-app miniflix
+```
+
+We will run this line:
+```
+ng g app miniflix --framework=react
+```
+
+p.s.  If you are curious about using nx to build an enterprise-class React (or other frontend) project, checkout [this article](https://blog.nrwl.io/powering-up-react-development-with-nx-cf0a9385dbec).
+
+Add [Bootstrap](https://getbootstrap.com/) (just remember Bootstrap is considered dangerous for serious projects).
+
+auth0-js react-router@3.0.0 jwt-decode axios
+
+
+[jwt-decode](https://www.npmjs.com/package/jwt-decode) is a *jwt-decode is a small browser library that helps decoding JWTs token which are Base64Url encoded.*
+
+
+
+
+
+
 #
 ## Managing state
 
