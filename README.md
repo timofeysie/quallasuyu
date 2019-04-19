@@ -1,14 +1,34 @@
-# Myorg
+# Quallasuyu
+
+Checkout how the big enterprises share code in a mono-repo environment.
 
 This project was generated using [Nx](https://nx.dev).
 
 <p align="center"><img src="https://raw.githubusercontent.com/nrwl/nx/master/nx-logo.png" width="450"></p>
 
-## Managing state
-## Starting out
-## The dep-graph
-## Prettier
+#
+## Table of contents
 
+* [Managing state](#managing-state)
+* [Starting out](#starting-out)
+* [The dep-graph](#the-dep-graph)
+* [Prettier](#prettier)
+* [React commands](#react-commands)
+* [Styled-components schematic](#styled-components-schematic)
+* [Can't resolve and not a module errors](#can't-resolve-and-not-a-module-errors)
+* [Fixing the tests](#fixing-the-tests)
+* [Creating the React apps](#creating-the-React-apps)
+* [Quick Start & Documentation](#1uick-Start-&-Documentation)
+* [Generate an application](#generate-an-application)
+* [Development server](#development-server)
+* [Code scaffolding](#code-scaffolding)
+* [Build](#build)
+* [Running unit tests](#running-unit-tests)
+* [Running end-to-end tests](#running-end-to-end-tests)
+* [Further help](#further-help)
+
+
+#
 ## Managing state
 
 Managing state is a hard problem. Things that update the state concurrently need to coordinated:
@@ -116,7 +136,7 @@ yarn e2e --watch
 ```
 
 
-### React only commands
+## React commands
 
 Use ```-dry-run``` to preview the changes before committing them.
 ```
@@ -128,7 +148,7 @@ yarn add axios # Install HTTP client
 ```
 
 
-### Styled-components schematic
+## Styled-components schematic
 
 The usual process goes like this:
 1. Install styled-components as a dependency.
@@ -146,7 +166,7 @@ Then, using parts of the @angular-devkit/schematics, @angular-devkit/core and @n
 You can see an example implementation [here](https://github.com/nrwl/react-nx-example/tree/master/tools).
 
 
-### Not a module errors
+## Can't resolve and not a module errors
 
 Out of the box we were getting this error:
 ```
@@ -157,6 +177,29 @@ error TS2306: File '...index.ts' is not a module.
 ```
 
 The file is just an interface.  However, it wasn't being exported.  Easy fix.
+
+This happened again when adding the Giphy sample.  Alright, it's a slightly different error.
+```
+ERROR in ./app/app.tsx
+Module not found: Error: Can't resolve '@my-app/gifs' in '/Users/tim/angular/myorg/apps/react-demo/src/app'
+ @ ./app/app.tsx 5:0-36 18:105-109
+ @ ./main.tsx
+ @ multi (webpack)-dev-server/client?http://0.0.0.0:0 ./main.tsx
+```
+
+```
+$ npm run affected:build -- --base=master
+...
+ERROR in apps/todos/src/app/app.module.ts(13,3): error TS2345: Argument of type '{ declarations: (typeof AppComponent)[]; imports: (typeof UiModule | typeof BrowserModule)[]; providers: undefined[]; bootstrap: (typeof AppComponent)[]; shemas: any[]; }' is not assignable to parameter of type 'NgModule'.
+  Object literal may only specify known properties, but 'shemas' does not exist in type 'NgModule'. Did you mean to write 'schemas'?
+apps/todos/src/app/app.module.ts(13,12): error TS2304: Cannot find name 'CUSTOM_ELEMENTS_SCHEMA'.
+```
+
+The following issue appears to be about to be resolved:
+[fix(frontend): tsconfig paths resolution #1233](https://github.com/nrwl/nx/pull/1233)
+
+A comment 13 days ago says *all Tsconfig paths should work*.  I should hope so.
+
 
 
 ## Fixing the tests
@@ -193,6 +236,29 @@ Other failing tests probably related to the first failure:
 ```
 
 
+## Creating the React apps
+
+Changing my-app to react-demo.  [Source](https://blog.nrwl.io/powering-up-react-development-with-nx-cf0a9385dbec)
+```
+ng g app react-demo
+yarn start
+yarn ng generate lib --name=home --no-interactive --framework=react
+
+yarn add react-router react-router-dom
+npm install react-router react-router-dom
+// (done) update our app component and styles
+
+yarn ng generate lib --name=gifs --no-interactive --framework=react
+yarn add axios // Install HTTP client
+//  implement a Giphy search
+
+// (done) to use the Gifs component from the app, update app.tsx
+// (done) update environment.ts with the Giphy entry.
+
+ng build my-app --prod // generate assets so that it can be served statically
+```
+
+
 #
 ## Quick Start & Documentation
 
@@ -200,7 +266,7 @@ Other failing tests probably related to the first failure:
 
 [Interactive tutorial](https://nx.dev/tutorial/01-create-application)
 
-## Generate your first application
+## Generate an application
 
 Run `ng g app myapp` to generate an application. When using Nx, you can create multiple applications and libraries in the same CLI workspace.
 

@@ -16,7 +16,9 @@
     "baseUrl": ".",
     "paths": {
       "@myorg/data": ["libs/data/src/index.ts"],
-      "@myorg/ui": ["libs/ui/src/index.ts"]
+      "@myorg/ui": ["libs/ui/src/index.ts"],
+      "@myorg/home": ["libs/home/src/index.ts"],
+      "@myorg/gifs": ["libs/gifs/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]

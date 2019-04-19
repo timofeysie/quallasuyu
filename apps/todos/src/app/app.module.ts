@@ -10,6 +10,6 @@ import { UiModule } from '@myorg/ui';
   imports: [BrowserModule, HttpClientModule, UiModule],
   providers: [],
   bootstrap: [AppComponent],
-  shemas: [CUSTOM_ELEMENTS_SCHEMA],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
 export class AppModule {}

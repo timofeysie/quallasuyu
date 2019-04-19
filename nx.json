@@ -22,6 +22,18 @@
     },
     "ui": {
       "tags": []
+    },
+    "react-demo": {
+      "tags": []
+    },
+    "react-demo-e2e": {
+      "tags": []
+    },
+    "home": {
+      "tags": []
+    },
+    "gifs": {
+      "tags": []
     }
   }
 }
