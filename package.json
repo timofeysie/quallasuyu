@@ -38,6 +38,7 @@
     "@angular/router": "^7.0.0",
     "@nestjs/common": "5.5.0",
     "@nestjs/core": "5.5.0",
+    "angular-in-memory-web-api": "^0.8.0",
     "auth0-js": "^9.10.2",
     "axios": "^0.18.0",
     "core-js": "^2.5.4",

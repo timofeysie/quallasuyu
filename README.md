@@ -28,7 +28,24 @@ This project was generated using [Nx](https://nx.dev).
 * [Further help](#further-help)
 
 
-## 100 Days of React challenge
+## Routing
+
+What is the best way to setup routing with tests and all the other scaffolding stuff the cli and do.  The docs say:
+*When you generate a module, you can use the --routing option like ng g module my-module --routing to create a separate file my-module-routing.module.ts to store the module routes.  The file includes an empty Routes object that you can fill with routes to different components and/or modules.  You can use the --routing option with ng new to create a app-routing.module.ts file when you create or initialize a project.*
+
+A bit of a tangent to get an in memory API setup and a few pages to use it.
+```
+ npm install --save angular-in-memory-web-api
+ ng g s backend
+ ng g s contact
+ ng g c contact-list --frontendProject=todos
+ ng g c contact-detail --frontendProject=todos
+```
+
+
+
+
+## 100 Days of React Miniflix challenge
 
 Since this is a power-up project, we are using our new nx mono-repo.  So instead of running this line from the [challeng](https://scotch.io/tutorials/build-a-mini-netflix-with-react-in-10-minutes):
 ```
@@ -44,14 +61,108 @@ p.s.  If you are curious about using nx to build an enterprise-class React (or o
 
 Add [Bootstrap](https://getbootstrap.com/) (just remember Bootstrap is considered dangerous for serious projects).
 
+Install these:
+```
 auth0-js react-router@3.0.0 jwt-decode axios
-
+```
 
 [jwt-decode](https://www.npmjs.com/package/jwt-decode) is a *jwt-decode is a small browser library that helps decoding JWTs token which are Base64Url encoded.*
 
 
+Axios is an http lib.  I usually reach for Fetch, but Axios is pretty popular these days.
+
+Next, and Auth0 lib which reveals what I'm assuming is the completed project [here](https://github.com/unicodeveloper/miniflix/blob/master/src/utils/AuthService.js).
+
+The [linked to tutorial](https://github.com/auth0-blog/reactjs-authentication-tutorial) on Auth0 which I've used before with Angular I'm assuming will provide details of how to setup an Auth0 account and fill in the details needed to use Auth0:
+```
+const ID_TOKEN_KEY = 'id_token';
+const ACCESS_TOKEN_KEY = 'access_token';
+const CLIENT_ID = 'EeobY3jxsMoFREmqfmsZwAALQb73WeWm';
+const CLIENT_DOMAIN = 'unicoder.auth0.com';
+const REDIRECT = 'http://localhost:3000/callback';
+const SCOPE = 'full:access';
+const AUDIENCE = 'http://miniflix.com';
+```
+
+I would say that the hype at the beginning of the Scotch.io article which talks about 10 minutes from now as the finish time is now exposed as false.  Actually they sat the *app be ready in 8 minutes*.  Sure it will.  Nice clickbait.
+
+The challenge is still valid.  When looking for my last role, I had quite a few tests like this that lasted anywhere from 100 on HackerRank to 3 or 4 hours of open ended implementations.
+
+Rant over, there are some differences in the project structure created by nx and create-react-app.
+
+### apps/miniflix/
+```
+src/app/app.tsx
+```
+
+### src/
+```
+index.js
+```
+
+In Nav.js:
+```
+import './app.css';
+```
+
+to this:
+```
+import '../app.scss';
+```
 
 
+When the tutorial says *open up index.js and add replace it with the code here*, we put that into src/app/app.tsx.
+
+Then, when we run our project we have to specify which app to run in this mono-reopo world we created like this:
+```
+ng serve miniflix
+```
+
+Then we get this error:
+```
+Failed to compile.
+./app/app.tsx
+Module not found: Error: Can't resolve './registerServiceWorker' in '/Users/tim/angular/myorg/apps/miniflix/src/app'
+```
+
+You might think that problems like this would inspire use to just follow along with the basic example and use create-react-app instead of a mono-repo built with nx.  Well, a little, but since I am trying to learn about using nx with all kinds of projects, this is a great way to get familiar with the workflow and the kinds of problems that arise during development.
+
+If that line 23 of the app.tsx code is commented out:
+```
+//registerServiceWorker();
+```
+
+then the error changes to this:
+```
+Uncaught TypeError: Cannot read property 'func' of undefined
+    at Object.../../../node_modules/react-router/lib/PropTypes.js (PropTypes.js:8)
+```
+
+Going to clone the finished [repo here](https://github.com/unicodeveloper/miniflix.git) and see if it will run.  Actually, after reading the comments at the end of the Scoth.io article, I'm not going to bother.  Also, on the Slack channel, Tyrique Daniel said *noone found a fix will start a new tut tomorrow will share with the group*.
+
+But, no, I don't like to give up so easy.  I want to know if that second function above is due to old router code.
+
+The tutorial shows installing an exact version:
+```
+react-router@3.0.0
+```
+
+However, if we install it ourselves without the version number, we get:
+```
+react-router@3.2.1
+```
+
+But then the serve returns this runtime error (and warning that was maybe there before):
+```
+react-dom.development.js:62 Uncaught Invariant Violation: Target container is not a DOM element.
+    at invariant (http://localhost:4200/vendor.js:4700:29)
+    ...
+client:148 [WDS] Warnings while compiling.
+warnings @ client:148
+client:154 ./main.tsx 4:36-39
+"export 'App' was not found in './app/app'
+warnings @ client:154
+```
 
 
 #
@@ -96,6 +207,7 @@ ng g app reactapp --framework=react // React
 ng serve todos // start it up
 ng e2e todos-e2e --watch // run the e2e tests
 ng g node-app api --frontendProject=todos // create the node app
+ng g s backend --frontendProject=todos // create the node app
 yarn ng generate node-app --name=api --framework=nestjs --no-interactive
 ng serve api // serve the app
 ng build api // build the app
@@ -224,7 +336,8 @@ apps/todos/src/app/app.module.ts(13,12): error TS2304: Cannot find name 'CUSTOM_
 The following issue appears to be about to be resolved:
 [fix(frontend): tsconfig paths resolution #1233](https://github.com/nrwl/nx/pull/1233)
 
-A comment 13 days ago says *all Tsconfig paths should work*.  I should hope so.
+A comment 13 days ago says *all Tsconfig paths should work*.  I should hope so.  However, it mentions paths with an asterix, not an '@', so maybe these issues are not related?
+
 
 
 
