@@ -1,40 +1,23 @@
-import * as React from 'react';
-import { Component } from 'react';
+import React from 'react';
+import ReactDOM from 'react-dom';
+import Upload from './components/Upload';
+import Display from './components/Display';
+import Callback from './components/Callback';
+import registerServiceWorker from './registerServiceWorker';
+import { Router, Route, browserHistory } from 'react-router';
+import { requireAuth } from './utils/AuthService';
 
-import './app.scss';
-
-export class App extends Component {
-  render() {
-    const title = 'miniflix';
-    return (
-      <div>
-        <div style={{ textAlign: 'center' }}>
-          <h1>Welcome to {title}!</h1>
-          <img
-            width="450"
-            src="https://raw.githubusercontent.com/nrwl/nx/master/nx-logo.png"
-          />
-        </div>
-        <p>
-          This is a React app built with <a href="https://nx.dev">Nx</a>.
-        </p>
-        <p>
-          🔎 **Nx is a set of Angular CLI power-ups for modern development.**
-        </p>
-        <h2>Quick Start & Documentation</h2>
-        <ul>
-          <li>
-            <a href="https://nx.dev/getting-started/what-is-nx">
-              30-minute video showing all Nx features
-            </a>
-          </li>
-          <li>
-            <a href="https://nx.dev/tutorial/01-create-application">
-              Interactive tutorial
-            </a>
-          </li>
-        </ul>
-      </div>
-    );
-  }
+const Root = () => {
+  return (
+    <div className="container">
+      <Router history={browserHistory}>
+        <Route path="/" component={Display}/>
+        <Route path="/upload" component={Upload} onEnter={requireAuth} />
+        <Route path="/callback" component={Callback} />
+      </Router>
+    </div>
+  )
 }
+
+ReactDOM.render(<Root />, document.getElementById('root'));
+//registerServiceWorker();
