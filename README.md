@@ -9,6 +9,8 @@ This project was generated using [Nx](https://nx.dev).
 #
 ## Table of contents
 
+* [Testing routing](#testing-routing)
+* [100 Days of React Miniflix challenge](100 Days of React Miniflix challenge)
 * [Managing state](#managing-state)
 * [Starting out](#starting-out)
 * [The dep-graph](#the-dep-graph)
@@ -28,7 +30,7 @@ This project was generated using [Nx](https://nx.dev).
 * [Further help](#further-help)
 
 
-## Routing
+## Testing routing
 
 What is the best way to setup routing with tests and all the other scaffolding stuff the cli and do.  The docs say:
 *When you generate a module, you can use the --routing option like ng g module my-module --routing to create a separate file my-module-routing.module.ts to store the module routes.  The file includes an empty Routes object that you can fill with routes to different components and/or modules.  You can use the --routing option with ng new to create a app-routing.module.ts file when you create or initialize a project.*
@@ -42,12 +44,32 @@ A bit of a tangent to get an in memory API setup and a few pages to use it.
  ng g c contact-detail --frontendProject=todos
 ```
 
+Setting up the contact master/detail view was fine.  However, our todo add function is broken.  The console error is:
+```
+body: {error: "Collection 'addTodo' not found"}
+headers: HttpHeaders {normalizedNames: Map(0), lazyUpdate: null, lazyInit: ƒ}
+status: 404
+statusText: "Not Found"
+url: "/api/addTodo"
+```
+
+Even though the server is running, the app is not hitting it.  Have to deal with that later.  On a roll with the router testing right now.
+
+```
+Unexpected value 'HttpClient' imported by the module 'DynamicTestModule'. Please add a @NgModule annotation.
+```
+
+SO: *You have to import the module HttpClientModule and reference that in the imports.*
+
+<rant>In Javascript, why cant the test code be the same as the app code?</rant>
 
 
 
 ## 100 Days of React Miniflix challenge
 
-Since this is a power-up project, we are using our new nx mono-repo.  So instead of running this line from the [challeng](https://scotch.io/tutorials/build-a-mini-netflix-with-react-in-10-minutes):
+The code for this section lives in the minflex branch on Github.
+
+Since this is an nx mono-repo project (many apps, one repo), we use the nx commands.  So instead of running this line from the [challenge](https://scotch.io/tutorials/build-a-mini-netflix-with-react-in-10-minutes):
 ```
 create-react-app miniflix
 ```
@@ -57,7 +79,9 @@ We will run this line:
 ng g app miniflix --framework=react
 ```
 
-p.s.  If you are curious about using nx to build an enterprise-class React (or other frontend) project, checkout [this article](https://blog.nrwl.io/powering-up-react-development-with-nx-cf0a9385dbec).
+Ng is the Angular CLI, but notice we can use that power with React apps also.
+
+p.s.  If you are curious about using nx to build an enterprise-class React (or other frontend/backend/full-stack) projects, checkout [this article](https://blog.nrwl.io/powering-up-react-development-with-nx-cf0a9385dbec).
 
 Add [Bootstrap](https://getbootstrap.com/) (just remember Bootstrap is considered dangerous for serious projects).
 
