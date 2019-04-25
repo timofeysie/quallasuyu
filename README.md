@@ -44,7 +44,7 @@ A bit of a tangent to get an in memory API setup and a few pages to use it.
  ng g c contact-detail --frontendProject=todos
 ```
 
-Setting up the contact master/detail view was fine.  However, our todo add function is broken.  The console error is:
+Setting up the [contacts](https://www.smashingmagazine.com/2018/11/a-complete-guide-to-routing-in-angular/) master/detail view was fine.  However, our todo add function is broken.  The console error is:
 ```
 body: {error: "Collection 'addTodo' not found"}
 headers: HttpHeaders {normalizedNames: Map(0), lazyUpdate: null, lazyInit: ƒ}
@@ -63,9 +63,72 @@ SO: *You have to import the module HttpClientModule and reference that in the im
 
 <rant>In Javascript, why cant the test code be the same as the app code?</rant>
 
+Then our first router testing [from this article](https://codecraft.tv/courses/angular/unit-testing/routing/) works like this:
+```
+router.navigate(['']);
+tick();
+expect(location.path()).toBe('/contacts');
+```
+
+The reason we test for contacts is because that is our default rout in the routing module:
+```
+{ path: '', pathMatch: 'full', redirectTo: 'contacts' },
+```
+
+Next, testing the detail view route.  Ignoring the contact id, the tests are taking quite a long time to run, and the top of the output in the console says:
+```
+console.warn node_modules/@angular/core/bundles/core.umd.js:16879
+  Navigation triggered outside Angular zone, did you forget to call 'ngZone.run()'?
+  ... x 4 ...
+  ● Router: App › navigate to "contact" takes you to /contact
+    Uncaught (in promise): Error: Cannot match any routes. URL Segment: 'contact'
+    Error: Cannot match any routes. URL Segment: 'contact'
+```
+
+I know there are two issues here.  Since the tests are taking about a minute and a half, fixing that first would allow a saner environment for fixing the second failing test.
+
+One solution would be to wrap the tests inside a
+```
+fixture.ngZone.run(() => {
+  ... test ...
+});
+```
+
+The solution also calls for async, while we have been using the fakeAsync.  Using a real async works well.  Or at least it seemed to.  The two tests pass.  However, adding a third test like this failed after some time:
+```
+Cannot find name 'async'.
+```
+
+Switching back to fakeAsync and the three tests pass in about twenty seconds.  That a lot better than the usual 80 it was taking before, but still not speedy.  I wouldn't imaging that testing routing could take so long.
+
+Another example of using fakeAsync looks like this:
+```
+it("fakeAsync works", fakeAsync(() => {
+    let promise = new Promise(resolve => {
+      setTimeout(resolve, 10);
+    });
+    let done = false;
+    promise.then(() => (done = true));
+    tick(50);
+    expect(done).toBeTruthy();
+}));
+```
+
+This test passes also, but with out three tests running between 30 to 50 seconds each time, it's not ideal.  Time to look at some route guard testing.  Maybe we can speed things up with a broader range of router testing methods.
 
 
-## 100 Days of React Miniflix challenge
+
+## 100 Days of React
+
+This is an Instagram, Slack extraveganza of React learning.  Below are some of the projects and challenges.
+
+### React To-Do App with React Hooks challenge
+
+The week two challenge is more realistic.
+
+https://scotch.io/tutorials/build-a-react-to-do-app-with-react-hooks-no-class-components
+
+### Miniflix challenge
 
 The code for this section lives in the minflex branch on Github.
 
@@ -142,7 +205,9 @@ Then, when we run our project we have to specify which app to run in this mono-r
 ng serve miniflix
 ```
 
-Then we get this error:
+### The service worker error
+
+Running the app we get this error:
 ```
 Failed to compile.
 ./app/app.tsx
@@ -156,7 +221,26 @@ If that line 23 of the app.tsx code is commented out:
 //registerServiceWorker();
 ```
 
-then the error changes to this:
+On the [Slack channel](https://code100days.slack.com/messages/DJ3DSR2RL/convo/CHJF83RPC-1555875663.326800/) Lenora Porter points out: *According to the article, the serviceWorker is called using*
+```
+import registerServiceWorker from './registerServiceWorker';
+```
+*and called again at the bottom of index.js with*
+```
+registerServiceWorker();
+```
+*I believe this is an old way of doing things.  Use this instead:*
+```
+import * as serviceWorker from './serviceWorker';
+```
+*and then*
+```
+serviceWorker.unregister();
+```
+
+### Cannot read property 'func' of undefined
+
+After dealing with the service worker problem the error changes to this:
 ```
 Uncaught TypeError: Cannot read property 'func' of undefined
     at Object.../../../node_modules/react-router/lib/PropTypes.js (PropTypes.js:8)

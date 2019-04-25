@@ -31,13 +31,35 @@ describe("Router: App", () => {
     router = TestBed.get(Router);
     location = TestBed.get(Location);
     fixture = TestBed.createComponent(AppComponent);
-    router.initialNavigation();
+    fixture.ngZone.run(() => {
+      router.initialNavigation();
+    });
   });
 
   it('navigate to "" redirects you to /contacts', fakeAsync(() => {
-    router.navigate(['']);
-    tick();
-    expect(location.path()).toBe('/contacts');
+    fixture.ngZone.run(() => {
+      router.navigate(['']);
+      tick();
+      expect(location.path()).toBe('/contacts');
+    });
+  }));
+
+  it('navigate to "contact" takes you to /contact', fakeAsync(() => {
+    fixture.ngZone.run(() => {
+      router.navigate(['/contact/2']);
+      tick();
+      expect(location.path()).toBe('/contact/2');
+    });
+  }));
+
+  it("fakeAsync works", fakeAsync(() => {
+    let promise = new Promise(resolve => {
+      setTimeout(resolve, 10);
+    });
+    let done = false;
+    promise.then(() => (done = true));
+    tick(50);
+    expect(done).toBeTruthy();
   }));
 
 });
