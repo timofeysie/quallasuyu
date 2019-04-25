@@ -26,7 +26,7 @@ describe('AuthGuard', () => {
         authGuard = new AuthGuard(authService, router);
         expect(authGuard.canActivate()).toEqual(true);
     });
-    it('should navigate to home for a logged out user', () => {
+    it('should navigate to the root path for a logged out user', () => {
       authService = { isLoggedIn: () => false };
       router = new MockRouter();
       authGuard = new AuthGuard(authService, router);

@@ -3,7 +3,6 @@ import { NgModule } from '@angular/core';
 import { AppComponent } from './app.component';
 import { HttpClientModule } from '@angular/common/http';
 import { UiModule } from '@myorg/ui';
-import { Todo } from '@myorg/data';
 import { InMemoryWebApiModule } from 'angular-in-memory-web-api';
 import { BackendService } from './backend.service';
 import { AppRoutingModule } from './app-routing.module';
@@ -24,7 +23,6 @@ import { UnrestrictedComponent } from './unrestricted/unrestricted.component';
     BrowserModule,
     HttpClientModule,
     UiModule,
-    Todo,
     AppRoutingModule,
     InMemoryWebApiModule.forRoot(BackendService)
   ],

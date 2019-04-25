@@ -336,6 +336,39 @@ Test Suites: 1 failed, 9 passed, 10 total
 Tests:       3 failed, 12 passed, 15 total
 ```
 
+If you quit the test watch and run it again, you will get only the modified tests running and you can focus on those.  The last test for the auth guard is this one:
+```
+it('should navigate to contacts for a logged out user', () => {
+  authService = { isLoggedIn: () => false };
+  router = new MockRouter();
+  authGuard = new AuthGuard(authService, router);
+  spyOn(router, 'navigate');
+  expect(authGuard.canActivate()).toEqual(false);
+  expect(router.navigate).toHaveBeenCalledWith(['/']);
+});
+```
+
+It changes the return value of isLoggedIn and creates an instance of the class.  It also adds a spy to the navigate method of router.  Now calling canActivate should return false and the navigate method will be called to redirect users to the root path.  
+
+In this case it is the /contacts route.  So why do we check for /?  I guess that's just the way the Angular router works.  The translated root path doesn't show up in the test.
+
+Running ng serve on the Angular app now has this issue:
+```
+ERROR in apps/todos/src/app/app.module.ts(27,5): error TS2693: 'Todo' only refers to a type, but is being used as a value here.
+```
+
+The data model was added to the imports of the main module to try and solve some of the errors for the app component.  Have to remove that now.
+```
+import { Todo } from '@myorg/data';
+...
+imports: [
+  ...
+  Todo,
+```
+
+One more thing to play with before finishing up this section is setting the auth.service to return false so that restricted is now restricted.  Create some test links in the component template and the restricted page is now restricted.
+
+Next up, implement a real auth solution with AWS Cognito!
 
 
 ## 100 Days of React
