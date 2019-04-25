@@ -5,13 +5,12 @@ import { HttpClient } from '@angular/common/http';
   providedIn: 'root'
 })
 export class ContactService {
-
-  API_URL: string = "/api/";
-  constructor(private http: HttpClient) { }
-  getContacts(){
-   return this.http.get(this.API_URL + 'contacts')
+  API_URL: string = '/api/';
+  constructor(private http: HttpClient) {}
+  getContacts() {
+    return this.http.get(this.API_URL + 'contacts');
   }
-  getContact(contactId){
-   return this.http.get(`${this.API_URL + 'contacts'}/${contactId}`)
+  getContact(contactId) {
+    return this.http.get(`${this.API_URL + 'contacts'}/${contactId}`);
   }
 }

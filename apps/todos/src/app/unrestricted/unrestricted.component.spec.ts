@@ -1,19 +1,18 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { UnrestrictedComponent } from './unrestricted.component';
 
-import { TodosComponent } from './todos.component';
-
-describe('TodosComponent', () => {
-  let component: TodosComponent;
-  let fixture: ComponentFixture<TodosComponent>;
+describe('UnrestrictedComponent', () => {
+  let component: UnrestrictedComponent;
+  let fixture: ComponentFixture<UnrestrictedComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [TodosComponent]
+      declarations: [UnrestrictedComponent]
     }).compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(TodosComponent);
+    fixture = TestBed.createComponent(UnrestrictedComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

@@ -8,18 +8,19 @@ import { ContactService } from '../contact.service';
   styleUrls: ['./contact-detail.component.css']
 })
 export class ContactDetailComponent implements OnInit {
-
   contact: any;
-  constructor(private contactService: ContactService, private route: ActivatedRoute) { }
+  constructor(
+    private contactService: ContactService,
+    private route: ActivatedRoute
+  ) {}
 
   ngOnInit() {
     this.route.paramMap.subscribe(params => {
-    console.log(params.get('id'))
-     this.contactService.getContact(params.get('id')).subscribe(c =>{
+      console.log(params.get('id'));
+      this.contactService.getContact(params.get('id')).subscribe(c => {
         console.log(c);
         this.contact = c;
-    })
+      });
     });
-
   }
 }

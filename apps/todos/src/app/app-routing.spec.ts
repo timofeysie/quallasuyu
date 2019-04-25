@@ -7,10 +7,11 @@ import { HttpClientModule } from '@angular/common/http';
 import { AppComponent } from './app.component';
 import { ContactListComponent } from './contact-list/contact-list.component';
 import { ContactDetailComponent } from './contact-detail/contact-detail.component';
+import { RestrictedComponent } from './restricted/restricted.component';
+import { UnrestrictedComponent } from './unrestricted/unrestricted.component';
 import { routes } from './app-routing.module';
 
-
-describe("Router: App", () => {
+describe('Router: App', () => {
   let location: Location;
   let router: Router;
   let fixture;
@@ -25,8 +26,9 @@ describe("Router: App", () => {
       declarations: [
         ContactListComponent,
         ContactDetailComponent,
-        AppComponent
-      ]
+        UnrestrictedComponent,
+        RestrictedComponent,
+        AppComponent]
     });
     router = TestBed.get(Router);
     location = TestBed.get(Location);
@@ -52,7 +54,7 @@ describe("Router: App", () => {
     });
   }));
 
-  it("fakeAsync works", fakeAsync(() => {
+  it('fakeAsync works', fakeAsync(() => {
     let promise = new Promise(resolve => {
       setTimeout(resolve, 10);
     });
@@ -61,5 +63,4 @@ describe("Router: App", () => {
     tick(50);
     expect(done).toBeTruthy();
   }));
-
 });

@@ -1,13 +1,13 @@
 import { TestBed, async } from '@angular/core/testing';
 import { AppComponent } from './app.component';
-import { Todo } from '@myorg/data';
+import { RouterTestingModule } from '@angular/router/testing';
 
 describe('AppComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ AppComponent, Todo ],
-      imports: [ ],
-      providers: [ ]
+      declarations: [AppComponent],
+      imports: [RouterTestingModule],
+      providers: []
     }).compileComponents();
   }));
 
@@ -27,8 +27,6 @@ describe('AppComponent', () => {
     const fixture = TestBed.createComponent(AppComponent);
     fixture.detectChanges();
     const compiled = fixture.debugElement.nativeElement;
-    expect(compiled.querySelector('h1').textContent).toContain(
-      'Todos'
-    );
+    expect(compiled.querySelector('h1').textContent).toContain('Todos');
   });
 });
