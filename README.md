@@ -2,6 +2,8 @@
 
 Checkout how the big enterprises share code in a mono-repo environment.
 
+This has a number of front end projects written in both React and Angular, some shared UI and JavaScript libraries, and some NodeJS backend services.
+
 This project was generated using [Nx](https://nx.dev).
 
 <p align="center"><img src="https://raw.githubusercontent.com/nrwl/nx/master/nx-logo.png" width="450"></p>
@@ -28,6 +30,44 @@ This project was generated using [Nx](https://nx.dev).
 * [Running unit tests](#running-unit-tests)
 * [Running end-to-end tests](#running-end-to-end-tests)
 * [Further help](#further-help)
+
+
+## Fixing the Todos
+
+While unit testing the auth guard implementation, it was noticed that our add todo function was failing, and that there is no default list of sample todos.  This is the error that shows up when choosing the add todo button.
+```
+body: {error: "Collection 'addTodo' not found"}
+headers: HttpHeaders {normalizedNames: Map(0), lazyUpdate: null, lazyInit: ƒ}
+status: 404
+statusText: "Not Found"
+url: "/api/addTodo"
+```
+
+The first step is actually running the API server, then run the app:
+```
+ng serve api
+ng serve todos
+```
+
+Both calls return 404s.
+```
+"/api/todos"
+"/api/addTodo"
+status: 404
+statusText: "Not Found"
+```
+
+
+Did this happen because we implemented the backend service for in-memory data?  The first guess is that yes, this will sabotage any APIs to our server:
+```
+imports: [
+  ...
+  InMemoryWebApiModule.forRoot(BackendService)
+```
+
+What we could do is conditionally use this if the user is offline.  Is that possible? Otherwise, get rid of that and move the contacts functionality into the backend.  Since it's just a demo, probably not worth worrying about.  The todos app is just a test bed for unit test practice, etc.
+
+We will be creating a more serious app based on this work, so I am less concerened with this breakage right now.  The *more serious app* will use NgRx for state management, so we definately won't be needing the code for the todos except maybe as a model for tying the libraries, the API server and the front end together using nx and the monorepo style.
 
 
 ## Testing routing
@@ -377,9 +417,61 @@ This is an Instagram, Slack extraveganza of React learning.  Below are some of t
 
 ### React To-Do App with React Hooks challenge
 
-The week two challenge is more realistic.
+The week two challenge is more realistic.  It's a 100% hooks todo list from [another Scotch.io article](https://scotch.io/tutorials/build-a-react-to-do-app-with-react-hooks-no-class-components).
 
-https://scotch.io/tutorials/build-a-react-to-do-app-with-react-hooks-no-class-components
+Instead of using create-react-app direcly, we use the nx command to start the project:
+```
+ng g app hooks-todo --framework=react
+```
+
+It calls for:
+```
+npm i react@16.7.00alpha.2 react-dom@16.7.0-alpha.2
+```
+
+We already have React 16.8 in our global package.json file.  That's right, a global package.json file.  It has everything for all of the projects.  It feels a little uncomfortable doing it this way, and seems to be breaking some kind of un-written rule that each project has its own package.  I suppose tree-shaking takes care of only including the used packages during deploy.
+
+The article links to a writeup on array destructuring if you want to know more info about the [todos, setTodos] syntax [here](https://scotch.io/tutorials/getting-started-with-react-hooks#toc-what-is-this-usestate-syntax-).
+
+### object destructuring vs array destructuring
+
+*object destructuring*
+```
+const users = { admin: 'chris', user: 'nick' };
+
+// grab the admin and user but rename them to SuperAdmin and SuperUser
+const { admin: SuperAdmin, user: SuperUser } = users;
+```
+
+*array destructuring*
+```
+const users = ['chris', 'nick'];
+
+// grab in order and rename at the same time
+const [SuperAdmin, SuperUser] = users;
+```
+
+
+However, running the app stirs up these console errors:
+```
+Warning: React.createElement: type is invalid -- expected a string (for built-in components) or a class/function (for composite components) but got: undefined. You likely forgot to export your component from the file it's defined in, or you might have mixed up default and named imports.
+warningWithoutStack @ react.development.js:188
+react-dom.development.js:62 Uncaught Invariant Violation: Element type is invalid: expected a string (for built-in components) or a class/function (for composite components) but got: undefined. You likely forgot to export your component from the file it's defined in, or you might have mixed up default and named imports.
+    at invariant (http://localhost:4200/vendor.js:1751:29)
+```
+
+The same code ran in it's own project created the normal way.  Anyhow, I won't bore you with any other details, but the src/main.tsx file had to change its import from this:
+```
+import { App } from './app/app';
+```
+
+to this:
+```
+import App from './app/app';
+```
+
+
+
 
 ### Miniflix challenge
 
@@ -556,6 +648,7 @@ Since the user can always interact with the URL directly, we should treat the ro
 StoreRouterConnectingModule parses the URL and creates a router state snapshot. It then invokes the reducer with the snapshot, and only after the reducer is done it proceeds with the navigation.
 
 The [example repo](https://github.com/vsavkin/state_management_ngrx4) shows how to implement the store router module connecting the reducer and its store to the router.  It follows the walkthrough in [this article](https://blog.nrwl.io/using-ngrx-4-to-manage-state-in-angular-applications-64e7a1f84b7b) by Victor Savkin, a co-founder of Nrwl used in this monotheistic project.
+
 
 
 ## Starting out
@@ -760,36 +853,20 @@ ng build my-app --prod // generate assets so that it can be served statically
 
 
 #
-## Quick Start & Documentation
+## Old Documentation
 
-[30-minute video showing all Nx features](https://nx.dev/getting-started/what-is-nx)
+Part of the automatically generated docs.
 
-[Interactive tutorial](https://nx.dev/tutorial/01-create-application)
-
-## Generate an application
-
-Run `ng g app myapp` to generate an application. When using Nx, you can create multiple applications and libraries in the same CLI workspace.
-
-## Development server
-
-Run `ng serve myapp` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
-
-## Code scaffolding
-
-Run `ng generate component component-name --project=myapp` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
-
-## Build
-
-Run `ng build myapp` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `--prod` flag for a production build.
-
-## Running unit tests
-
-Run `ng test` to execute the unit tests via [Jest](https://karma-runner.github.io).
-
-## Running end-to-end tests
-
-Run `ng e2e` to execute the end-to-end tests via [Cypress](http://www.protractortest.org/).
-
-## Further help
+```
+ng g app myapp` to generate an application. When using Nx, you can create multiple applications and libraries in the same CLI workspace.
+ng serve myapp` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
+ng e2e
+ng generate component component-name --project=myapp` to generate a new component. You can also ng generate directive|pipe|service|class|guard|interface|enum|module`.
+ng build myapp` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `--prod` flag for a production build.
+ng test` to execute the unit tests via [Jest](https://karma-runner.github.io).
+ng e2e` to execute the end-to-end tests via [Cypress](http://www.protractortest.org/).
+```
 
 To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md).
+[30-minute video showing all Nx features](https://nx.dev/getting-started/what-is-nx)
+[Interactive tutorial](https://nx.dev/tutorial/01-create-application)

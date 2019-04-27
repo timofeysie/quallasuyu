@@ -40,6 +40,12 @@
     },
     "miniflix-e2e": {
       "tags": []
+    },
+    "hooks-todo": {
+      "tags": []
+    },
+    "hooks-todo-e2e": {
+      "tags": []
     }
   }
 }
