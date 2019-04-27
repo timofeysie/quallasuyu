@@ -1,14 +1,14 @@
 import React, { useState } from "react";
 import './app.scss';
 // create a component that we can use in the return of the main App component
-function Todo({ todo, index, completeTodo, removeTodo }) {
+function Todo({ todo, index, completeTodo, removeTodo, selectTodo }) {
   return (
     <div className="todo"
       style={{ textDecoration: todo.isCompleted ? "line-through" : "" }}>
-      {todo.text}
+      <div onClick={() => selectTodo(index)}>{todo.text}</div>
       <div>
         <button onClick={() => completeTodo(index)}>Complete</button>
-        <button class="removeTodo" onClick={() => removeTodo(index)}>X</button>
+        <button className="removeTodo" onClick={() => removeTodo(index)}>X</button>
       </div>
     </div>
   );
@@ -32,6 +32,7 @@ function TodoForm({ addTodo }) {
 }
 
 function App() {
+  const [todo, setTodo] = useState({});
   const [todos, setTodos] = useState([
      { text: "Learn about React",
        isCompleted: false },
@@ -54,6 +55,10 @@ function App() {
    newTodos.splice(index, 1);
    setTodos(newTodos);
   };
+  const selectTodo = index => {
+    console.log('chosen',todos[index])
+    setTodo(todos[index]);
+  };
   return (
     <div className="app">
       <div className="todo-list">
@@ -66,9 +71,11 @@ function App() {
             todo={todo}
             completeTodo={completeTodo}
             removeTodo={removeTodo}
+            selectTodo={selectTodo}
           />
         ))}
         <TodoForm addTodo={addTodo} />
+        <div className="selectedTodo">{todo.text}</div>
       </div>
     </div>
   );

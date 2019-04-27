@@ -22,6 +22,7 @@
 }
 .input {
   width: 394px;
+  box-shadow: 1px 1px 1px rgb(0,0,0.1) inset;
 }
 .removeTodo {
   margin-right: -10px;
@@ -29,4 +30,14 @@
 }
 button:focus, input:focus {
   outline:0;
+}
+.selectedTodo {
+  border: 1px solid black;
+  font-size: 12px;
+  margin: 2px;
+  padding: 5px;
+  border-radius: 4px;
+  display: inline-block;
+  min-height: 11px;
+  min-width: 383px;
 }

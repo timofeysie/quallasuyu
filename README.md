@@ -470,7 +470,35 @@ to this:
 import App from './app/app';
 ```
 
+After finishing the CRUD functions, I decided to add a select action that would let the user choose an item to display in another section of the app.  A basic master/detail pattern thingy.
 
+Using a hook, it works like this:
+```
+function Todo({ todo, index, completeTodo, removeTodo, selectTodo }) {
+  return (
+    <div className="todo">
+      <div onClick={() => selectTodo(index)}>{todo.text}</div>
+      ...
+function App() {
+  const [todo, setTodo] = useState({});
+  const [todos, setTodos] = useState([ ... ]);
+  const addTodo = text => { };
+  const completeTodo = index => { };
+  const removeTodo = index => { };
+  const selectTodo = index => {
+    setTodo(todos[index]);
+  };
+  return (
+    <div className="app">
+      ...
+        <div className="selectedTodo">{todo.text}</div>
+```
+
+That's a pretty nice skeleton of functionality to hang an app off if you ask me.
+
+To do (pun intended) is to clear the selected item when
+
+Next we want to use Fetch or Axium to get our data from an API.
 
 
 ### Miniflix challenge
