@@ -20,3 +20,13 @@
   align-items: center;
   justify-content: space-between;
 }
+.input {
+  width: 394px;
+}
+.removeTodo {
+  margin-right: -10px;
+  border: none;
+}
+button:focus, input:focus {
+  outline:0;
+}
