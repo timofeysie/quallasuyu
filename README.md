@@ -415,6 +415,144 @@ Next up, implement a real auth solution with AWS Cognito!
 
 This is an Instagram, Slack extraveganza of React learning.  Below are some of the projects and challenges.
 
+## Auth0
+
+This is the week 3 challenge which uses
+
+To secure the Node.js API we use these two libraries:
+* express-jwt: A middleware that validates a JSON Web Token (JWT) and set the req.user with its attributes.
+* jwks-rsa: A library to retrieve RSA public keys from a JWKS (JSON Web Key Set) endpoint.
+
+To secure the React application with Auth0, yinstall only one library:
+* auth0-js:  the official library provided by Auth0
+
+
+### Setup for the backend includes creating an Express "check Jwt" middleware object that will validate ID tokens with this kind of info:
+```
+secret: jwksRsa.expressJwtSecret({
+  cache, rateLimit: true, jwksRequestsPerMinute, jwksUri
+  // Validate the audience and the issuer.
+  audience: CLIENT_ID, issuer: `https://<AUTH0_DOMAIN>/`, algorithms
+```
+
+The Client ID and Domain field are from the Auth0 dashboard.  Then make the endpoints to secure use the check Jwt middleware like this:
+```
+app.post('/', checkJwt, (req, res) => {
+```
+
+Then you can use the user name like this:
+```
+author: req.user.name,
+```
+
+### Setup for the frontend includes using only one library:
+```
+npm install auth0-js
+```
+
+Then create a helper class with these functions:
+```Javascript
+import auth0 from 'auth0-js';
+class Auth {
+  constructor() {
+    this.auth0 = new auth0.WebAuth({
+      // the following three lines MUST be updated
+      domain: '<YOUR_AUTH0_DOMAIN>',
+      audience: 'https://<YOUR_AUTH0_DOMAIN>/userinfo',
+      clientID: '<YOUR_AUTH0_CLIENT_ID>',
+      redirectUri: 'http://localhost:3000/callback',
+      responseType: 'id_token',
+      scope: 'openid profile'
+    });
+    this.getProfile = this.getProfile.bind(this);
+    this.handleAuthentication = this.handleAuthentication.bind(this);
+    this.isAuthenticated = this.isAuthenticated.bind(this);
+    this.signIn = this.signIn.bind(this);
+    this.signOut = this.signOut.bind(this);
+  }
+  getProfile() {  }
+  getIdToken() {  }
+  isAuthenticated() {  }
+  signIn() {  }
+  handleAuthentication() {  }
+  signOut() {  }
+}
+const auth0Client = new Auth();
+```
+
+Then, in somewhere like the navbar, this:
+```
+{
+  !auth0Client.isAuthenticated() &&
+  <button className="btn btn-dark" onClick={auth0Client.signIn}>Sign In</button>
+}
+{
+  auth0Client.isAuthenticated() &&
+  <div>
+    <label className="mr-2 text-white">{auth0Client.getProfile().name}</label>
+    <button className="btn btn-dark" onClick={() => {signOut()}}>Sign Out</button>
+  </div>
+}
+```
+
+A component is then needed to handle the callback route ```http://localhost:3000/callback``` is needed.
+```
+async componentDidMount() {
+  await auth0Client.handleAuthentication();
+  this.props.history.replace('/');
+}
+```
+
+It shows a message while fetching the user info and then redirects to the home page after it finishes.
+
+It is used in the App.js file like this:
+```
+<Route exact path='/callback' component={Callback}/>
+```
+
+To add protected routes a helper class can be used.  It is a functional component that takes a Component, so it can render it in case the user is authenticated, and a path so it can configure the default Route component provided by React Router. First it checks if the user isAuthenticated, and either redirects to login or renders the component passed in.
+```
+SecuredRoute(props) {
+  const {component: Component, path} = props;
+  return (
+    <Route path={path} render={() => {
+        if (!auth0Client.isAuthenticated()) {
+          auth0Client.signIn();
+          return <div></div>;
+        }
+        return <Component />
+    }} />
+  );
+}
+```
+
+Then in the App.js file, we can use that route like this:
+```
+<SecuredRoute path='/new-question' component={NewQuestion} />
+```
+
+And provide a link somewhere:
+```
+<Link to="/new-question">
+```
+
+The SubmitAnswer class does this to submit an answer to a question:
+```
+submit() {
+    this.props.submitAnswer(this.state.answer);
+```
+
+In the Question class, this handles the event and provides the axios.post functionality:
+```
+class Question extends Component {
+  constructor(props) {
+    this.submitAnswer = this.submitAnswer.bind(this);
+  }
+```
+
+It's not very clear how the props are used to handle the submit function.  The clear explanation will have to wait for now.
+
+
 ### React To-Do App with React Hooks challenge
 
 The week two challenge is more realistic.  It's a 100% hooks todo list from [another Scotch.io article](https://scotch.io/tutorials/build-a-react-to-do-app-with-react-hooks-no-class-components).
