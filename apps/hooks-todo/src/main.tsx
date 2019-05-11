@@ -1,6 +1,6 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
-
+import {BrowserRouter} from 'react-router-dom';
 import App from './app/app';
 
-ReactDOM.render(<App />, document.querySelector('myorg-root'));
+ReactDOM.render(<BrowserRouter><App /></BrowserRouter>, document.querySelector('myorg-root'));

@@ -11,6 +11,11 @@ This project was generated using [Nx](https://nx.dev).
 #
 ## Table of contents
 
+* [Workflow](#workflow)
+* [Converting code to Typescript in NodeJS](#converting-code-to-Typescript-in-NodeJS)
+* [Running on Minikube](#running-on-Minikube)
+* [Fixing the Todos](#fixing-the-Todos)
+* [Testing routing](#testing-routing)
 * [Testing routing](#testing-routing)
 * [100 Days of React Miniflix challenge](100 Days of React Miniflix challenge)
 * [Managing state](#managing-state)
@@ -30,6 +35,177 @@ This project was generated using [Nx](https://nx.dev).
 * [Running unit tests](#running-unit-tests)
 * [Running end-to-end tests](#running-end-to-end-tests)
 * [Further help](#further-help)
+
+
+## workflow
+
+```
+ng serve todos // start up the React app
+ng e2e todos-e2e --watch // run the e2e tests
+ng serve api // serve the Node app
+ng build api // build the app
+ng test api // test the app
+```
+
+Node server listens on http://localhost:3333/api
+
+Endpoints:
+```
+http://localhost:3333/api/todos
+```
+
+
+## Converting code to Typescript in NodeJS
+
+```
+const jwksRsa = require('jwks-rsa');
+```
+
+You would think that would become this:
+```
+import { jwksRsa } from ('jwks-rsa');
+```
+
+But we would then get this error:
+```
+TS1141: String literal expected.
+```
+
+Despite this error the file still compiles and runs.  It's a TypeScript error (indicated by the TS in the error code), and in an Angular app this would break the build and the app wouldn't run.  Interesting.
+
+This would be my next guess:
+```
+import * as jwksRsa from ('jwks-rsa');
+```
+
+No errors.  But we still don't really know how to use the jwksRsa Express middleware in a NestJS project.
+
+
+The next challenge will be to put the check token function in the appropriate place.
+```
+const checkJwt = jwt({
+  secret: jwksRsa.expressJwtSecret({ ... });
+})
+```
+
+The main.ts file is configured by Nest like this:
+```
+const app = await NestFactory.create(AppModule);
+```
+
+Other than set up the port and the global prefix, that's all that file should do.  It's the S in S.O.L.I.D.  Then, in the app module just it just sets up imports, providers (services) and controllers.
+
+The controller class uses annotations (or decorators) no doubt Nest uses to work it's magic:
+```
+@Get('todos')
+@Post('addTodo')
+```
+
+So, actually it seems like the main.ts file is the place where the configuration code *should* go.  Our first guess would be to just do this:
+```
+app.use(checkJwt);
+```
+
+Since NestJS is magic, maybe it can use it's magic to use than for API calls.  But what if we want some routes public, and some protected?
+
+Anyhow, the app compiles, but now when using the get API, we get this runtime error:
+```
+UnauthorizedError: No authorization token was found
+    at middleware (/Users/tim/repos/quallasuyu/node_modules/express-jwt/lib/index.js:76:21)
+    at Layer.handle [as handle_request] (/Users/tim/repos/quallasuyu/node_modules/@nestjs/core/node_modules/express/lib/router/layer.js:95:5)
+```
+
+Hey, that's magic for you!~  But still, it would be nice to have an unprotected route.  Save that feature for later?
+
+First, we will need to put actual Auth0 domain and client key in the check to see if we can then authenticate calls.  This will need a lot of front end code to get working, so stay tuned.
+
+We will also need to use the .env library to hide our Auth0 secrets from GitHub.  How do we do that again?
+
+Step 1: create a .env files
+
+This goes something like this:
+```
+PUBLIC_KEY=...secret..
+PRIVATE_KEY=...also secret...
+```
+
+Step 2: install dotenv
+Our dependencies should look like this:
+```
+    "dependencies": {
+    		"dotenv": "^7.0.0",
+```
+
+Step 3: use the secrets in NodeJS
+That could look like this:
+```
+require('dotenv').config();
+const public_key = process.env.PUBLIC_KEY;
+const private_key = process.env.PRIVATE_KEY;
+```
+
+Except, of course we are using NestJS with TypeScript, so again, not sure what is the best practice for this.  Once again we will most likely put that in the main.ts file, but it would be a good idea to also look at some other NestJS docs to see if they have a recommendation for this type of config issue.
+
+The next issue is that we want to check the user name passed in by the request.  Like this:
+```
+req.user.name
+```
+
+However, yes, you guessed it, there is no request object in the NestJS code.  It's hidden inside the NrWl/Nest magic bag.
+
+As we know from Node best practices, a good app is a layered app.  Keeping the request objects out of the lower layers is part of this.  So, in search of the correct layer.  Or not.  Probably that property will just get passed to the response automatically so we shouldn't worry about it.
+
+The Nest docs provide the answer.  Another decorator type arg:
+```
+@Get('todos')
+getData(@Req() req: Request) {
+  console.log('req.user.name',req.user.name);
+  return this.appService.getData();
+}
+```
+
+There are decorators for all the objects Express uses, such as params, next, body, query, headers, etc.
+
+And step 4 is to put the .env in the .gitignore file so it's not pushed to the server.
+
+Step 5 is realizing that none of that is needed because the id and domain name for the Auth0 app is actually OK to commit to the repo.  The id *looks* like a secret but it's not.  And there are no secrets on the front end, which is why OAuth was created in the first place: so some trusted organisation can provide authentication and the app trusts that organisation.
+
+
+## Running on Minikube
+
+There is a brief section about deployment in the sample code repo.  This is for Minikube which I have never heard of before.  I am however interested in Kubernetes and dev ops, so I would like to give it a try.
+
+The docs reference two links:
+
+- https://medium.com/@awkwardferny/getting-started-with-kubernetes-ingress-nginx-on-minikube-d75e58f52b6c
+- https://medium.freecodecamp.org/learn-kubernetes-in-under-3-hours-a-detailed-guide-to-orchestrating-containers-114ff420e882
+
+Create all the resources (deployment, services, and ingress):
+
+```bash
+kubectl apply -f resources-manifests/deployment.yaml
+kubectl apply -f resources-manifests/backend-service.yaml
+kubectl apply -f resources-manifests/frontend-service.yaml
+kubectl apply -f resources-manifests/ingress.yaml
+```
+
+Then, find out the IP address of the Minikube cluster:
+
+```bash
+minikube ip
+```
+
+Finally, head to a web browser and hit the IP address returned by the command above. Also, if needed you can use the following commands to shutdown everything:
+
+```bash
+kubectl delete -f resources-manifests/deployment.yaml
+kubectl delete -f resources-manifests/backend-service.yaml
+kubectl delete -f resources-manifests/frontend-service.yaml
+kubectl delete -f resources-manifests/ingress.yaml
+```
+
+How this would work with this NrWl monorepo, I'm not sure.  Have to read those docs first.
+
 
 
 ## Fixing the Todos
@@ -417,7 +593,7 @@ This is an Instagram, Slack extraveganza of React learning.  Below are some of t
 
 ## Auth0
 
-This is the week 3 challenge which uses
+This is the week 3 challenge which uses Auth0 to secure routes.
 
 To secure the Node.js API we use these two libraries:
 * express-jwt: A middleware that validates a JSON Web Token (JWT) and set the req.user with its attributes.
@@ -457,9 +633,9 @@ class Auth {
   constructor() {
     this.auth0 = new auth0.WebAuth({
       // the following three lines MUST be updated
-      domain: '<YOUR_AUTH0_DOMAIN>',
-      audience: 'https://<YOUR_AUTH0_DOMAIN>/userinfo',
-      clientID: '<YOUR_AUTH0_CLIENT_ID>',
+      domain: '<AUTH0_DOMAIN>',
+      audience: 'https://<AUTH0_DOMAIN>/userinfo',
+      clientID: '<AUTH0_CLIENT_ID>',
       redirectUri: 'http://localhost:3000/callback',
       responseType: 'id_token',
       scope: 'openid profile'
@@ -480,7 +656,9 @@ class Auth {
 const auth0Client = new Auth();
 ```
 
-Then, in somewhere like the navbar, this:
+(After setting up the backend which included installing the dotenv lib to hide the Auth0 secrets from GitHub, how do we hide these secrets in the front end?  When the app is deployed, there will be server settings which are service depedant.  But locally, can the front end also use that lib to get the secrets in the .env file?  Looks like we can do the same thing we did in the Node app in the frontend also.)
+
+Somewhere like the navbar, this:
 ```
 {
   !auth0Client.isAuthenticated() &&
@@ -551,6 +729,32 @@ class Question extends Component {
 ```
 
 It's not very clear how the props are used to handle the submit function.  The clear explanation will have to wait for now.
+
+### Adding the Q&A code to the todo apps
+
+The todo app is a simple one file affair.  The Q&A app is layered using better practices.  Some of the files needed are:
+```
+Auth.js
+NavBar.js
+Callback.js
+```
+
+Using Callback in the App.tsx shows the first big difference.  The todo app doesn't use routing.  Further work includes:
+```
+SecuredRoute/SecuredRoute.js
+NewQuestion/NewQuestion.js
+register the new route in your App.js file:
+Questions.js
+question/SubmitAnswer.js
+```
+
+The main issue then is merging the two apps within the app.tsx file with the code from the App.js file in the Q&A sample.
+
+The app structure however consists of just directories with a single file and the same name as their containing files.  What I recommend is a single directory called Q&A.  Can you put & in a directory and paths?  Called it q_and_a for now.
+
+Next, the todo app is build on hooks.  The Q&A app is build with classes.  Is it a good idea to try and mix the two?  It's a good exercise for a senior and I can answer my own question.
+
+
 
 
 ### React To-Do App with React Hooks challenge

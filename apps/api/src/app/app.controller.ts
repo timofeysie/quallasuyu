@@ -6,7 +6,8 @@ export class AppController {
   constructor(private readonly appService: AppService) {}
 
   @Get('todos')
-  getData() {
+  getData(@Req() req: Request) {
+    console.log('req.user.name',req.user.name);
     return this.appService.getData();
   }
 
