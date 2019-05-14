@@ -1,4 +1,4 @@
-import { Controller, Get, Post } from '@nestjs/common';
+import { Controller, Get, Post, Req, Request } from '@nestjs/common';
 import { AppService } from './app.service';
 
 @Controller()
@@ -7,7 +7,9 @@ export class AppController {
 
   @Get('todos')
   getData(@Req() req: Request) {
-    console.log('req.user.name',req.user.name);
+    if (typeof req !== 'undefined') {
+      console.log('req.user.name',req.user.name);
+    }
     return this.appService.getData();
   }
 

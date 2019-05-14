@@ -12,12 +12,16 @@ This project was generated using [Nx](https://nx.dev).
 ## Table of contents
 
 * [Workflow](#workflow)
+* [The pros and cons of a monorepo projects](#the-pros-and-cons-of-a-monorepo)
 * [Converting code to Typescript in NodeJS](#converting-code-to-Typescript-in-NodeJS)
 * [Running on Minikube](#running-on-Minikube)
 * [Fixing the Todos](#fixing-the-Todos)
 * [Testing routing](#testing-routing)
 * [Testing routing](#testing-routing)
-* [100 Days of React Miniflix challenge](100 Days of React Miniflix challenge)
+* [100 Days of React](100-Days-of-React)
+* [Auth0](#auth0)
+* [The Miniflix challenge](#the-Miniflix-challenge)
+* [To-Do App with React Hooks](#To-Do App with React Hooks)
 * [Managing state](#managing-state)
 * [Starting out](#starting-out)
 * [The dep-graph](#the-dep-graph)
@@ -53,6 +57,22 @@ Endpoints:
 ```
 http://localhost:3333/api/todos
 ```
+
+## The pros and cons of a monorepo
+
+This section is to capture notes are we go adding, developing and using project in this NrWl monorep.  They are not definitive problems or advantages, but rather items to either be looked into (for cons) or confirmed as helpful (for pros).
+
+These items are also specific to the NrWl/Nx approach.  I can't speak for other monorepo styles as I hvean't tried any others yet.  The closes I have gotten before is just putting related projects in one directory and opening that directory in the editor, which is not a bad way to go really.
+
+
+### Pros
+Ease of creating a server/client project.
+The dependency graph looks great.
+Changes that affect dependencies can be easy tested.
+
+### Cons
+Global search searches all the projects.
+Single package.json file.
 
 
 ## Converting code to Typescript in NodeJS
@@ -591,6 +611,21 @@ Next up, implement a real auth solution with AWS Cognito!
 
 This is an Instagram, Slack extraveganza of React learning.  Below are some of the projects and challenges.
 
+
+### Week 1
+Miniflix challenge.
+
+### Week 2
+Hooks todos.
+
+
+### Week 3
+Auth0.
+
+### Week 4
+Elasticsearch.
+
+
 ## Auth0
 
 This is the week 3 challenge which uses Auth0 to secure routes.
@@ -754,10 +789,76 @@ The app structure however consists of just directories with a single file and th
 
 Next, the todo app is build on hooks.  The Q&A app is build with classes.  Is it a good idea to try and mix the two?  It's a good exercise for a senior and I can answer my own question.
 
+### The port number
+
+The sample app uses localhost:8081 for the API server.  Using NrWl, we run:
+```
+ng serve api
+...
+Listening at http://localhost:3333/api
+```
+
+So then if we use curl to look at the server we get this:
+```
+curl localhost:3333
+UnauthorizedError: No authorization token was found
+    at middleware (/Users/tim/repos/quallasuyu/node_modules/express-jwt/lib/index.js:76:21)
+```
+
+All the routes are protected now by out auth middleware.  If we do login, we will also need to replace 8081 with 3333 in places that use Axios for http calls within the app such as Quststion, Questions, NewQuestion.
+
+On the Auth0 dashboard, we have set *Allowed Callback URLs*, *Allowed Logout URLs* and *Allowed Web Origins* as http://localhost:3000.
+
+Now, with the changes in place, the page loads and we get this error:
+```
+Request URL: http://localhost:3333/
+Request Method: GET
+Status Code: 500 Internal Server Error
+```
+
+Trying the login button out returns:
+```
+This site can’t be reached https’s server IP address could not be found.
+DNS_PROBE_FINISHED_NXDOMAIN
+```
+
+Then I notice this:
+```
+https://https//hakea.auth0.com/authorize?client_id=7MlVhNgye9YsRstn0yLtydbkSc3FZi1p&response_type=id_token&redirect_uri=http%3A%2F%2Flocalhost%3A3000%2Fcallback&scope=openid%20profile&audience=https%3A%2F%2Fhttps%3A%2F%2Fhakea.auth0.com%2Fuserinfo&state=A4nBa-JEBiFB4gpi8wj8Bu5s0cxEI.vZ&nonce=tZFg-ob~qhENKXP2QnycVn8CYwv49~xa&auth0Client=eyJuYW1lIjoiYXV0aDAuanMiLCJ2ZXJzaW9uIjoiOS4xMC4yIn0%3D
+```
+
+As Jamie Hyderman says: "We'll, there's yr' problem!"
+
+On the server, our AUTH0_DOMAIN = 'hakea.auth0.com'.  Both occurances of that variable appear *with* the https string in index.js.  For us, that's the main.ts file.
+
+In the front end, that string appears both with and without the https string.
+```
+domain: '<YOUR_AUTH0_DOMAIN>',
+audience: 'https://<YOUR_AUTH0_DOMAIN>/userinfo',
+```
+
+No where are we adding 'authorize' to the string, so it is being created in either the express-jwt or the jwks-rsa libraries.
+
+In main.ts, trying it like this without the https:
+```
+jwksUri: AUTH0_DOMAIN+'/.well-known/jwks.json'
+```
+
+Doing that changes the error message.  Had to add this full url with the callback string to the allowed callbacks field in the Auth0 dashboard like this:
+```
+http://localhost:3000/callback
+```
+
+Then we are back to an error, this time with the url showing:
+```
+http://localhost:3000/callback#error=access_denied&error_description=Service%20not%20found%3A%20hakea.auth0.com%2Fuserinfo&state=HAIhy8zp5dDC4bjf_gwzjsds~8Yj8jCT
+```
 
 
 
-### React To-Do App with React Hooks challenge
+
+
+## To-Do App with React Hooks
 
 The week two challenge is more realistic.  It's a 100% hooks todo list from [another Scotch.io article](https://scotch.io/tutorials/build-a-react-to-do-app-with-react-hooks-no-class-components).
 
@@ -843,7 +944,7 @@ To do (pun intended) is to clear the selected item when
 Next we want to use Fetch or Axium to get our data from an API.
 
 
-### Miniflix challenge
+## Miniflix challenge
 
 The code for this section lives in the minflex branch on Github.
 

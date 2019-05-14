@@ -1,6 +1,6 @@
 import auth0 from 'auth0-js';
 
-const AUTH0_DOMAIN = 'https://hakea.auth0.com';
+const AUTH0_DOMAIN = 'hakea.auth0.com';
 const AUTH0_CLIENT_ID = '7MlVhNgye9YsRstn0yLtydbkSc3FZi1p';
 
 class Auth {
@@ -8,7 +8,7 @@ class Auth {
     this.auth0 = new auth0.WebAuth({
       // the following three lines MUST be updated
       domain: AUTH0_DOMAIN,
-      audience: 'https://'+AUTH0_DOMAIN+'/userinfo',
+      audience: AUTH0_DOMAIN+'/userinfo',
       clientID: AUTH0_CLIENT_ID,
       redirectUri: 'http://localhost:3000/callback',
       responseType: 'id_token',
