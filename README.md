@@ -21,7 +21,7 @@ This project was generated using [Nx](https://nx.dev).
 * [100 Days of React](100-Days-of-React)
 * [Auth0](#auth0)
 * [The Miniflix challenge](#the-Miniflix-challenge)
-* [To-Do App with React Hooks](#To-Do App with React Hooks)
+* [To-Do App with React Hooks](#to-Do-App-with-React-Hooks)
 * [Managing state](#managing-state)
 * [Starting out](#starting-out)
 * [The dep-graph](#the-dep-graph)
