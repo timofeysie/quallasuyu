@@ -1,9 +1,14 @@
 {
   "extends": "./tsconfig.json",
   "compilerOptions": {
-    "outDir": "../../dist/out-tsc/apps/sunday",
+    "outDir": "./out-tsc/app",
     "types": []
   },
-  "exclude": ["src/test-setup.ts", "**/*.spec.ts"],
-  "include": ["**/*.ts"]
+  "include": [
+    "src/**/*.ts"
+  ],
+  "exclude": [
+    "src/test.ts",
+    "src/**/*.spec.ts"
+  ]
 }

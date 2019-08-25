@@ -706,6 +706,8 @@
         }
       }
     },
+
+
     "sunday-e2e": {
       "root": "apps/sunday-e2e",
       "projectType": "application",
