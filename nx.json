@@ -46,6 +46,12 @@
     },
     "hooks-todo-e2e": {
       "tags": []
+    },
+    "sunday": {
+      "tags": ["sunday-lint"]
+    },
+    "sunday-e2e": {
+      "tags": []
     }
   }
 }

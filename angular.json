@@ -617,6 +617,121 @@
           }
         }
       }
+    },
+    "sunday": {
+      "root": "apps/sunday/",
+      "sourceRoot": "apps/sunday/src",
+      "projectType": "application",
+      "prefix": "app",
+      "schematics": {
+        "@nrwl/schematics:component": {
+          "style": "scss"
+        }
+      },
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:browser",
+          "options": {
+            "outputPath": "dist/apps/sunday",
+            "index": "apps/sunday/src/index.html",
+            "main": "apps/sunday/src/main.ts",
+            "polyfills": "apps/sunday/src/polyfills.ts",
+            "tsConfig": "apps/sunday/tsconfig.app.json",
+            "assets": ["apps/sunday/src/favicon.ico", "apps/sunday/src/assets"],
+            "styles": ["apps/sunday/src/styles.scss"],
+            "scripts": [],
+            "es5BrowserSupport": true
+          },
+          "configurations": {
+            "production": {
+              "fileReplacements": [
+                {
+                  "replace": "apps/sunday/src/environments/environment.ts",
+                  "with": "apps/sunday/src/environments/environment.prod.ts"
+                }
+              ],
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "extractCss": true,
+              "namedChunks": false,
+              "aot": true,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": true,
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "2mb",
+                  "maximumError": "5mb"
+                }
+              ]
+            }
+          }
+        },
+        "serve": {
+          "builder": "@angular-devkit/build-angular:dev-server",
+          "options": {
+            "browserTarget": "sunday:build"
+          },
+          "configurations": {
+            "production": {
+              "browserTarget": "sunday:build:production"
+            }
+          }
+        },
+        "extract-i18n": {
+          "builder": "@angular-devkit/build-angular:extract-i18n",
+          "options": {
+            "browserTarget": "sunday:build"
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "apps/sunday/tsconfig.app.json",
+              "apps/sunday/tsconfig.spec.json"
+            ],
+            "exclude": ["**/node_modules/**"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/builders:jest",
+          "options": {
+            "jestConfig": "apps/sunday/jest.config.js",
+            "tsConfig": "apps/sunday/tsconfig.spec.json",
+            "setupFile": "apps/sunday/src/test-setup.ts"
+          }
+        }
+      }
+    },
+    "sunday-e2e": {
+      "root": "apps/sunday-e2e",
+      "projectType": "application",
+      "prefix": "",
+      "architect": {
+        "e2e": {
+          "builder": "@nrwl/builders:cypress",
+          "options": {
+            "cypressConfig": "apps/sunday-e2e/cypress.json",
+            "tsConfig": "apps/sunday-e2e/tsconfig.e2e.json",
+            "devServerTarget": "sunday:serve"
+          },
+          "configurations": {
+            "production": {
+              "devServerTarget": "sunday:serve:production"
+            }
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": "apps/sunday-e2e/tsconfig.e2e.json",
+            "exclude": ["**/node_modules/**"]
+          }
+        }
+      }
     }
   },
   "cli": {

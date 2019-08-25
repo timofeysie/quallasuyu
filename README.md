@@ -58,6 +58,96 @@ Endpoints:
 http://localhost:3333/api/todos
 ```
 
+## Comparing enterprise boilerplates for Ionic with NgxRocket & Nrwl
+
+### NgxRocket
+
+First, the competition.  Using the basic [ngX-Rocket](https://github.com/ngx-rocket/generator-ngx-rocket/) version 7.0.2
+```
+$ ngx new
+          __   __
+ _ _  __ _\ \./ / ____ ____ ____ _  _ ____ ___
+| ' \/ _` |>   <  |--< [__] |___ |-:_ |===  |
+|_||_\__, /_/°\_\ ENTERPRISE APP STARTER -~*=>
+     |___/ v7.0.2
+? What is the name of your app? saturday
+? What kind of app do you want to create? (Press <space> to select, <a> to toggle all, <i> to invert selection)Web app
+? Do you want a progressive web app? (with manifest and service worker) Yes
+? Which UI framework do you want? Ionic (more mobile-oriented)
+? Which kind of layout do you want? Side menu with split panels (more app-oriented)
+? Do you want authentication? Yes
+? Do you want lazy loading? Yes
+? Do you want analytics support (with Angulartics2)? No
+? Do you want additional tools? (Press <space> to select, <a> to toggle all, <i> to invert selection)Prettier (automatic code formatting), Hads (markdown-based doc system)
+? Do you want additional libraries? (Press <space> to select, <a> to toggle all, <i> to invert selection)
+```
+
+
+### Tasks:
+```
+ npm start // start dev server with live reload on http://localhost:4200
+ npm run build // build web app for production
+ npm test // run unit tests in watch mode for TDD
+ npm run test:ci // lint code and run units tests with coverage
+ npm run e2e // launch e2e tests
+ npm run docs // show docs and coding guides
+ npm run prettier // format your code automatically
+```
+
+### Features
+Along with Angular (with the usual unit & e2e testing) and Ionic, we get the following up and running:
+
+* [ngx-translate](https://github.com/ngx-translate/core)
+* Cross-browser CSS with [autoprefixer](https://github.com/postcss/autoprefixer) and
+  [browserslist](https://github.com/ai/browserslist)
+* Asset revisioning for [better cache management](https://webpack.github.io/docs/long-term-caching.html)
+* Unit tests using [Jasmine](http://jasmine.github.io) and [Karma](https://karma-runner.github.io)
+* End-to-end tests using [Protractor](https://github.com/angular/protractor)
+* Static code analysis: [TSLint](https://github.com/palantir/tslint), [Codelyzer](https://github.com/mgechev/codelyzer),
+  [Stylelint](http://stylelint.io) and [HTMLHint](http://htmlhint.com/)
+* Local knowledgebase server using [Hads](https://github.com/sinedied/hads)
+* Automatic code formatting with [Prettier](https://prettier.io)
+
+
+### building
+
+
+```
+$ ionic build
+> ng run app:build
+An unhandled exception occurred: Project 'app' could not be found in workspace.
+See "/private/var/folders/jn/xzs5tlvd2wb3dccpknvkxczh0000gn/T/ng-fzq2Ll/angular-errors.log" for further details.
+[ERROR] An error occurred while running subprocess ng.
+        ng run app:build exited with exit code 127.
+        Re-running this command with the --verbose flag may provide more information.
+```
+
+Searching for answers on Google ironically shows nrwl answers for this error.
+
+Why is it looking for 'app'?  The name of the project is Saturday.  App appreas nowhere but the readme.
+
+But does the project use the Ionic CLI or just the Ionic components>  If I recall, it said Cordova in the project setup.
+
+*Use cordova directly through npm script.*
+
+
+### NrWl Ionic app
+
+There is an [issue from last year](https://github.com/nrwl/nx/issues/619).  It uses [xplat](https://nstudio.io/xplat).  Anyone know what that is?
+
+*xplat is an added value pack for Nx which provides additional app generators and optional supporting architecture for different platform/framework combinations.  Currently supported platforms are Electron, Ionic and NativeScript.*  
+
+At the end of the issue someone links to this [this setup guide](https://medium.com/mean-fire/nx-nrwl-ionic-1baf3a43db74).
+```
+ionic init --type=angular
+ng g app sunday --style=scss --unit-test-runner=jest --e2e-test-runner=cypress --routing --prefix=app
+yarn add @ionic-native/core @ionic-native/http @ionic-native/splash-screen @ionic-native/status-bar @ionic/angular
+yarn add @ionic/angular-toolkit -D
+```
+
+*This will install required dependencies and create an angular app that we will replace with ionic implementation.*  Sounds like fun.  First a commit.
+
+
 ## The pros and cons of a monorepo
 
 This section is to capture notes are we go adding, developing and using project in this NrWl monorep.  They are not definitive problems or advantages, but rather items to either be looked into (for cons) or confirmed as helpful (for pros).
