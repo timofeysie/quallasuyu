@@ -40,10 +40,9 @@ This project was generated using [Nx](https://nx.dev).
 * [Running end-to-end tests](#running-end-to-end-tests)
 * [Further help](#further-help)
 
-
 ## workflow
 
-```
+```bash
 ng serve todos // start up the React app
 ng e2e todos-e2e --watch // run the e2e tests
 ng serve api // serve the Node app
@@ -54,23 +53,158 @@ ng test api // test the app
 Node server listens on http://localhost:3333/api
 
 Endpoints:
-```
+
+```link
 http://localhost:3333/api/todos
 ```
+
+### How to Update Nx
+
+```bash
+yarn update
+npm run update
+```
+
+## Nrwl 9.1
+
+I haven't looked at this code in 7 to 12 months.  So upgrading to the (second) latest Nrwl will take a bit of refreshing.
+
+Updating to the latest using the [official blog](https://blog.nrwl.io/dependency-graph-enhancements-eslint-plugin-buildable-library-dependencies-ngrx-9-and-more-in-e7b896c4fbca) as a guide.
+
+```bash
+>yarn update
+yarn run v1.17.3
+$ ng update @nrwl/schematics
+Using package manager: 'npm'
+Collecting installed dependencies...
+Found 55 dependencies.
+Package '@nrwl/schematics' is not a dependency.
+error Command failed with exit code 1.
+info Visit https://yarnpkg.com/en/docs/cli/run for documentation about this command.
+```
+
+I think yarn is a bit old here?
+
+```bash
+>yarn self-update
+yarn run v1.17.3
+error Command "self-update" not found.
+info Visit https://yarnpkg.com/en/docs/cli/run for documentation about this command.
+```
+
+So how does one update yarn?
+
+```bash
+C:\Users\timof\repos\timofeysie\quallasuyu>curl --compressed -o- -L https://yarnpkg.com/install.sh | bash
+'bash' is not recognized as an internal or external command,
+operable program or batch file.
+```
+
+When cloning this project on a new lappy, this is what happens:
+
+```bash
+gyp verb `which` succeeded C:\\Windows\\py.exe C:\\Windows\\py.exe
+gyp ERR! configure error
+gyp ERR! stack Error: Command failed: C:\\Windows\\py.exe -c import sys; print \"%s.%s.%s\" % sys.version_info[:3];
+gyp ERR! stack   File \"<string>\", line 1
+gyp ERR! stack     import sys; print \"%s.%s.%s\" % sys.version_info[:3];
+gyp ERR! stack                                ^
+gyp ERR! stack SyntaxError: invalid syntax
+gyp ERR! stack
+gyp ERR! stack     at ChildProcess.exithandler (child_process.js:304:12)
+gyp ERR! stack     at ChildProcess.emit (events.js:196:13)
+gyp ERR! stack     at maybeClose (internal/child_process.js:1000:16)
+gyp ERR! stack     at Process.ChildProcess._handle.onexit (internal/child_process.js:267:5)
+gyp ERR! System Windows_NT 10.0.18363
+gyp ERR! command \"C:\\\\Program Files\\\\nodejs\\\\node.exe\" \"C:\\\\Users\\\\timof\\\\repos\\\\timofeysie\\\\quallasuyu\\\\node_modules\\\\node-gyp\\\\bin\\\\node-gyp.js\" \"rebuild\" \"--verbose\" \"--libsass_ext=\" \"--libsass_cflags=\" \"--libsass_ldflags=\" \"--libsass_library=\"
+gyp ERR! cwd C:\\Users\\timof\\repos\\timofeysie\\quallasuyu\\node_modules\\node-sass
+gyp ERR! node -v v12.0.0
+gyp ERR! node-gyp -v v3.8.0
+gyp ERR! not ok
+warning Your current version of Yarn is out of date. The latest version is "1.22.4", while you're on "1.17.3".
+info To upgrade, download the latest installer at "https://yarnpkg.com/latest.msi".
+Done in 594.06s.
+```
+
+That installer works.  Now we is rolling with 1.22.4.
+
+Next issue:
+
+```bash
+ng serve todos
+ERROR in ./src/styles.scss (C:/Users/timof/repos/timofeysie/quallasuyu/node_modules/@angular-devkit/build-angular/src/angular-cli-files/plugins/raw-css-loader.js!C:/Users/timof/repos/timofeysie/quallasuyu/node_modules/postcss-loader/src??embedded!C:/Users/timof/repos/timofeysie/quallasuyu/node_modules/sass-loader/lib/loader.js??ref--14-3!./src/styles.scss)
+Module build failed (from C:/Users/timof/repos/timofeysie/quallasuyu/node_modules/sass-loader/lib/loader.js):
+Error: Cannot find module 'node-sass'
+Require stack:
+- C:\Users\timof\repos\timofeysie\quallasuyu\node_modules\sass-loader\lib\loader.js
+```
+
+```bash
+yarn add node-sass
+```
+
+Then the ng serve works.
+
+```bash
+ng serve todos
+yarn start hooks-todo
+```
+
+Both working at <http://localhost:4200/>
+
+```bash
+ng serve api // serve the Node app
+```
+
+```json
+{"statusCode":500,"message":"Internal server error"}
+```
+
+Not very descriptive there.  My first guess is that we introduced auth last year since mothballing this repo, and that work was still in progress.
+
+```bash
+ng build api // build the app
+...
+ERROR in C:/Users/timof/repos/timofeysie/quallasuyu/apps/api/src/app/app.controller.ts
+ERROR in C:/Users/timof/repos/timofeysie/quallasuyu/apps/api/src/app/app.controller.ts(11,39):
+```
+
+```bash
+ng test api // test the app
+Can't find a root directory while resolving a config file path.
+Provided path to resolve: C:\C\Users\timof\repos\timofeysie\quallasuyu\apps\api\jest.config.js
+cwd: C:\Users\timof\repos\timofeysie\quallasuyu
+Error: Can't find a root directory while resolving a config file path.
+Provided path to resolve: C:\C\Users\timof\repos\timofeysie\quallasuyu\apps\api\jest.config.js
+cwd: C:\Users\timof\repos\timofeysie\quallasuyu
+    at _default (C:\Users\timof\repos\timofeysie\quallasuyu\node_modules\jest-config\build\resolveConfigPath.js:69:11)
+```
+
+Run the e2e tests"
+
+```bash
+ng e2e todos-e2e --watch
+  1 failing
+  1) TodoApps should display todos:
+     CypressError: Timed out retrying: Expected to find element: 'li.todo', but never found it.
+```
+
+That's the current status of this repo.  Next up, a little more Ionic for using [this plugin](https://github.com/devinshoemaker/nxtend/blob/master/libs/ionic-react/README.md).
 
 ## Comparing enterprise boilerplates for Ionic with NgxRocket & Nrwl
 
 ### NgxRocket
 
 First, the competition.  Using the basic [ngX-Rocket](https://github.com/ngx-rocket/generator-ngx-rocket/) version 7.0.2
-```
+
+```bash
 $ ngx new
           __   __
  _ _  __ _\ \./ / ____ ____ ____ _  _ ____ ___
 | ' \/ _` |>   <  |--< [__] |___ |-:_ |===  |
 |_||_\__, /_/°\_\ ENTERPRISE APP STARTER -~*=>
      |___/ v7.0.2
-? What is the name of your app? saturday
+  ? What is the name of your app? saturday
 ? What kind of app do you want to create? (Press <space> to select, <a> to toggle all, <i> to invert selection)Web app
 ? Do you want a progressive web app? (with manifest and service worker) Yes
 ? Which UI framework do you want? Ionic (more mobile-oriented)
@@ -715,22 +849,23 @@ Next up, implement a real auth solution with AWS Cognito!
 
 ## 100 Days of React
 
-This is an Instagram, Slack extraveganza of React learning.  Below are some of the projects and challenges.
-
+This is an Instagram, Slack extravaganza of React learning.  Below are some of the projects and challenges.
 
 ### Week 1
+
 Miniflix challenge.
 
 ### Week 2
+
 Hooks todos.
 
-
 ### Week 3
+
 Auth0.
 
 ### Week 4
-Elasticsearch.
 
+Elasticsearch.
 
 ## Auth0
 
@@ -745,6 +880,7 @@ To secure the React application with Auth0, yinstall only one library:
 
 
 ### Setup for the backend includes creating an Express "check Jwt" middleware object that will validate ID tokens with this kind of info:
+
 ```
 secret: jwksRsa.expressJwtSecret({
   cache, rateLimit: true, jwksRequestsPerMinute, jwksUri
@@ -753,21 +889,25 @@ secret: jwksRsa.expressJwtSecret({
 ```
 
 The Client ID and Domain field are from the Auth0 dashboard.  Then make the endpoints to secure use the check Jwt middleware like this:
-```
+
+```JavaScript
 app.post('/', checkJwt, (req, res) => {
 ```
 
 Then you can use the user name like this:
-```
+
+```JavaScript
 author: req.user.name,
 ```
 
-### Setup for the frontend includes using only one library:
-```
+### Setup for the frontend includes using only one library
+
+```JavaScript
 npm install auth0-js
 ```
 
 Then create a helper class with these functions:
+
 ```Javascript
 import auth0 from 'auth0-js';
 class Auth {
@@ -797,7 +937,7 @@ class Auth {
 const auth0Client = new Auth();
 ```
 
-(After setting up the backend which included installing the dotenv lib to hide the Auth0 secrets from GitHub, how do we hide these secrets in the front end?  When the app is deployed, there will be server settings which are service depedant.  But locally, can the front end also use that lib to get the secrets in the .env file?  Looks like we can do the same thing we did in the Node app in the frontend also.)
+(After setting up the backend which included installing the dotenv lib to hide the Auth0 secrets from GitHub, how do we hide these secrets in the front end?  When the app is deployed, there will be server settings which are service dependant.  But locally, can the front end also use that lib to get the secrets in the .env file?  Looks like we can do the same thing we did in the Node app in the frontend also.)
 
 Somewhere like the navbar, this:
 ```
