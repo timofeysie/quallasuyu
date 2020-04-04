@@ -70,6 +70,7 @@
     "@nestjs/testing": "5.5.0",
     "@nrwl/builders": "7.8.0",
     "@nrwl/schematics": "7.8.0",
+    "@nxtend/ionic-react": "^1.0.1",
     "@types/jest": "24.0.9",
     "@types/jquery": "3.3.6",
     "@types/node": "~8.9.4",

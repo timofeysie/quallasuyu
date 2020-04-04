@@ -12,6 +12,7 @@ This project was generated using [Nx](https://nx.dev).
 ## Table of contents
 
 * [Workflow](#workflow)
+* [@nxtend/ionic-react](*@nxtend/ionic-react)
 * [The pros and cons of a monorepo projects](#the-pros-and-cons-of-a-monorepo)
 * [Converting code to Typescript in NodeJS](#converting-code-to-Typescript-in-NodeJS)
 * [Running on Minikube](#running-on-Minikube)
@@ -64,6 +65,37 @@ http://localhost:3333/api/todos
 yarn update
 npm run update
 ```
+
+### Install the nx CLI
+
+```bash
+yarn global add @nrwl/cli
+npm install -g @nrwl/cli
+```
+
+
+## @nxtend/ionic-react
+
+Trying out the basics [from the docs](https://duncanhunter.gitbook.io/enterprise-angular-applications-with-ngrx-and-nx/2-creating-an-nx-workspace)
+
+```bash
+yarn add --dev @nxtend/ionic-react
+nx generate @nxtend/ionic-react:application ionic-sam
+Error: Cannot find module 'C:\Users\timof\repos\timofeysie\quallasuyu\node_modules\@nrwl\cli\bin\nx.js'
+Require stack:
+- C:\Users\timof\AppData\Local\Yarn\Data\global\node_modules\@nrwl\cli\lib\init-global.js
+- C:\Users\timof\AppData\Local\Yarn\Data\global\node_modules\@nrwl\cli\bin\nx.js
+    at Function.Module._resolveFilename (internal/modules/cjs/loader.js:610:15)
+    at Function.Module._load (internal/modules/cjs/loader.js:526:27)
+
+npx nx generate @nxtend/ionic-react:application ionic-sam
+
+ng serve ionic-sam
+Project 'ionic-sam' does not support the 'serve' target.
+Error: Project 'ionic-sam' does not support the 'serve' target.
+```
+
+After this there is no output, but the project is not created.
 
 ## Nrwl 9.1
 
@@ -190,6 +222,8 @@ ng e2e todos-e2e --watch
 ```
 
 That's the current status of this repo.  Next up, a little more Ionic for using [this plugin](https://github.com/devinshoemaker/nxtend/blob/master/libs/ionic-react/README.md).
+
+
 
 ## Comparing enterprise boilerplates for Ionic with NgxRocket & Nrwl
 
