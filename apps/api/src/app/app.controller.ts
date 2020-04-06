@@ -7,8 +7,8 @@ export class AppController {
 
   @Get('todos')
   getData(@Req() req: Request) {
-    if (typeof req !== 'undefined') {
-      console.log('req.user.name',req.user.name);
+    if (typeof req !== 'undefined' && typeof req['user'] !== 'undefined') {
+      console.log('req.user.name',req['user'].name);
     }
     return this.appService.getData();
   }

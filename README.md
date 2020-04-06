@@ -74,6 +74,54 @@ npm install -g @nrwl/cli
 ```
 
 
+## Fixing existing issues
+
+Since dusting off this project to get back into development with nrwl and nx, it's time to fix some of the issues that were left hanging from last year.
+
+### UnauthorizedError: No authorization token was found
+
+This error is causes by running the api app workflow:
+
+```bash
+ng serve api // serve the Node app
+```
+
+Node server listens on http://localhost:3333/api
+
+```bash
+Building the app causes this error:
+ERROR in C:/Users/timof/repos/timofeysie/quallasuyu/apps/api/src/app/app.controller.ts
+ERROR in C:/Users/timof/repos/timofeysie/quallasuyu/apps/api/src/app/app.controller.ts(11,39):
+TS2339: Property 'user' does not exist on type 'Request'.
+```
+
+That is just from printing out the user name to console.  This allows the build to continue.
+
+```TypeScript
+console.log('req.user.name',req['user'].name);
+```
+
+If we check for undefined before trying that, and comment out the jwt check:
+
+```Typescript
+app.use(checkJwt);
+```
+
+Then our stupid todos will be served.  I'm still not sure if Nest is the best way to go.  I'm not really a backend dev, but I had a better time [learning and implementing the NodeJS best practices by hand in the Strumosa project](https://github.com/timofeysie/strumosa-pipe), without relying on magical solutions like annotations.  I suppose it's a powerful tool.  It does seem to limit the developers to the Angular way of doing things.  And since the role of Angular in the developer community has been diminished, so has Nest by association.
+
+### "Collection 'addTodo' not found"
+
+```bash
+ng serve todos // start up the React app
+ng e2e todos-e2e --watch // run the e2e tests
+ng serve api // serve the Node app
+ng build api // build the app
+ng test api // test the app
+```
+
+Node server listens on http://localhost:3333/api
+
+
 ## @nxtend/ionic-react
 
 Trying out the basics [from the docs](https://duncanhunter.gitbook.io/enterprise-angular-applications-with-ngrx-and-nx/2-creating-an-nx-workspace)
@@ -96,6 +144,8 @@ Error: Project 'ionic-sam' does not support the 'serve' target.
 ```
 
 After this there is no output, but the project is not created.
+
+Opened [this issue](https://github.com/devinshoemaker/nxtend/issues/83) with the plugin for this.
 
 ## Nrwl 9.1
 
@@ -223,6 +273,15 @@ ng e2e todos-e2e --watch
 
 That's the current status of this repo.  Next up, a little more Ionic for using [this plugin](https://github.com/devinshoemaker/nxtend/blob/master/libs/ionic-react/README.md).
 
+Wait, there are a few more apps to test.  Don't tell anyone they are still using Angular 7.
+
+```bash
+ng serve sunday
+ERROR in multi ./src/styles.scss
+Module not found: Error: Can't resolve 'C:\Users\timof\repos\timofeysie\quallasuyu\apps\sunday\src\styles.scss' in 'C:\Users\timof\repos\timofeysie\quallasuyu\apps\sunday'
+```
+
+I've seen that "error in multi" message before.
 
 
 ## Comparing enterprise boilerplates for Ionic with NgxRocket & Nrwl
@@ -340,69 +399,77 @@ These items are also specific to the NrWl/Nx approach.  I can't speak for other 
 
 
 ### Pros
+
 Ease of creating a server/client project.
 The dependency graph looks great.
 Changes that affect dependencies can be easy tested.
 
 ### Cons
+
 Global search searches all the projects.
 Single package.json file.
 
-
 ## Converting code to Typescript in NodeJS
 
-```
+```JavaScript
 const jwksRsa = require('jwks-rsa');
 ```
 
 You would think that would become this:
-```
+
+```TypeScript
 import { jwksRsa } from ('jwks-rsa');
 ```
 
 But we would then get this error:
-```
+
+```TypeScript
 TS1141: String literal expected.
 ```
 
 Despite this error the file still compiles and runs.  It's a TypeScript error (indicated by the TS in the error code), and in an Angular app this would break the build and the app wouldn't run.  Interesting.
 
 This would be my next guess:
-```
+
+```TypeScript
 import * as jwksRsa from ('jwks-rsa');
 ```
 
 No errors.  But we still don't really know how to use the jwksRsa Express middleware in a NestJS project.
 
-
 The next challenge will be to put the check token function in the appropriate place.
-```
+
+```TypeScript
 const checkJwt = jwt({
   secret: jwksRsa.expressJwtSecret({ ... });
 })
 ```
 
 The main.ts file is configured by Nest like this:
-```
+
+```TypeScript
 const app = await NestFactory.create(AppModule);
 ```
 
 Other than set up the port and the global prefix, that's all that file should do.  It's the S in S.O.L.I.D.  Then, in the app module just it just sets up imports, providers (services) and controllers.
 
 The controller class uses annotations (or decorators) no doubt Nest uses to work it's magic:
-```
+
+```TypeScript
 @Get('todos')
 @Post('addTodo')
 ```
 
 So, actually it seems like the main.ts file is the place where the configuration code *should* go.  Our first guess would be to just do this:
-```
+
+```TypeScript
 app.use(checkJwt);
 ```
 
-Since NestJS is magic, maybe it can use it's magic to use than for API calls.  But what if we want some routes public, and some protected?
+Since NestJS is magic, maybe it can use it's magic to use that for API calls.  But what if we want some routes public, and some protected?
 
 Anyhow, the app compiles, but now when using the get API, we get this runtime error:
+
 ```
 UnauthorizedError: No authorization token was found
     at middleware (/Users/tim/repos/quallasuyu/node_modules/express-jwt/lib/index.js:76:21)
@@ -505,7 +572,8 @@ How this would work with this NrWl monorepo, I'm not sure.  Have to read those d
 ## Fixing the Todos
 
 While unit testing the auth guard implementation, it was noticed that our add todo function was failing, and that there is no default list of sample todos.  This is the error that shows up when choosing the add todo button.
-```
+
+```bash
 body: {error: "Collection 'addTodo' not found"}
 headers: HttpHeaders {normalizedNames: Map(0), lazyUpdate: null, lazyInit: ƒ}
 status: 404
@@ -514,22 +582,24 @@ url: "/api/addTodo"
 ```
 
 The first step is actually running the API server, then run the app:
-```
+
+```bash
 ng serve api
 ng serve todos
 ```
 
 Both calls return 404s.
-```
+
+```bash
 "/api/todos"
 "/api/addTodo"
 status: 404
 statusText: "Not Found"
 ```
 
-
 Did this happen because we implemented the backend service for in-memory data?  The first guess is that yes, this will sabotage any APIs to our server:
-```
+
+```TypeScript
 imports: [
   ...
   InMemoryWebApiModule.forRoot(BackendService)
@@ -537,8 +607,13 @@ imports: [
 
 What we could do is conditionally use this if the user is offline.  Is that possible? Otherwise, get rid of that and move the contacts functionality into the backend.  Since it's just a demo, probably not worth worrying about.  The todos app is just a test bed for unit test practice, etc.
 
-We will be creating a more serious app based on this work, so I am less concerened with this breakage right now.  The *more serious app* will use NgRx for state management, so we definately won't be needing the code for the todos except maybe as a model for tying the libraries, the API server and the front end together using nx and the monorepo style.
+We will be creating a more serious app based on this work, so I am less concerned with this breakage right now.  The *more serious app* will use NgRx for state management, so we definitely won't be needing the code for the todos except maybe as a model for tying the libraries, the API server and the front end together using nx and the monorepo style.
 
+Later, I came across [this StackOverflow answer](contact1@email.com) which solved the issue mentioned above where http.get was not working.  Adding the following to the app.module fixes that.  It was really bugging me.
+
+```Typescript
+InMemoryWebApiModule.forRoot(BackendService, {passThruUnknownUrl: true}),
+```
 
 ## Testing routing
 

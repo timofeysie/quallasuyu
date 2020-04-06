@@ -24,7 +24,7 @@ import { UnrestrictedComponent } from './unrestricted/unrestricted.component';
     HttpClientModule,
     UiModule,
     AppRoutingModule,
-    InMemoryWebApiModule.forRoot(BackendService)
+    InMemoryWebApiModule.forRoot(BackendService, {passThruUnknownUrl: true}),
   ],
   providers: [],
   bootstrap: [AppComponent]
