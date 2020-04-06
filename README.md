@@ -73,6 +73,20 @@ yarn global add @nrwl/cli
 npm install -g @nrwl/cli
 ```
 
+## The Duncan Hunter
+
+Despite it being two years old now, there is not that much out there that covers using NgRx with the nx CLI.  Duncan kind of owns the field, so it's worth going through [his process](https://duncanhunter.gitbook.io/enterprise-angular-applications-with-ngrx-and-nx/3-generating-components-and-nx-lib) as it was two years ago figuring there are a lot of people in Sydney who started off with that also.  And since this repo is a year behind also, should be a decent fit for all the deps.
+
+```bash
+ng g application customer-portal --style=scss --routing --prefix=app
+ng g lib auth --routing --prefix=app --parent-module=apps/customer-portal/src/app/app.module.ts
+ng s --project=customer-portal
+```
+
+```bash
+ng g c containers/login --project=auth
+Could not find an NgModule. Use the skip-import option to skip importing in NgModule.
+```
 
 ## Fixing existing issues
 
@@ -281,8 +295,42 @@ ERROR in multi ./src/styles.scss
 Module not found: Error: Can't resolve 'C:\Users\timof\repos\timofeysie\quallasuyu\apps\sunday\src\styles.scss' in 'C:\Users\timof\repos\timofeysie\quallasuyu\apps\sunday'
 ```
 
-I've seen that "error in multi" message before.
+I've seen that "error in multi" message before.  Where was that?
 
+Next, the official docs say:
+*To upgrade from a Nx 7 workspace to a Nx 8 workspace, run:*
+
+```bash
+ng update @nrwl/schematics@8.4.8 to update the workspace to the Nx 8 format.
+ng update @nrwl/workspace@8.4.8 to update the workspace to 8.4.8.
+```
+
+And:
+
+The current laptop versions are:
+
+```bash
+Angular CLI: 7.3.1
+Node: 12.0.0
+OS: win32 x64
+Angular: 7.2.13
+... animations, common, compiler, compiler-cli, core, forms
+... language-service, platform-browser, platform-browser-dynamic
+... router
+@angular-devkit/architect         0.901.0
+@angular-devkit/build-angular     0.13.8
+@angular-devkit/build-optimizer   0.13.8
+@angular-devkit/build-webpack     0.13.8
+@angular-devkit/core              9.1.0
+@angular-devkit/schematics        7.3.1
+@angular/cli                      7.3.1
+@ngtools/webpack                  7.3.8
+@schematics/angular               7.3.1
+@schematics/update                0.13.1
+rxjs                              6.3.3
+typescript                        3.2.2
+webpack                           4.29.0
+```
 
 ## Comparing enterprise boilerplates for Ionic with NgxRocket & Nrwl
 

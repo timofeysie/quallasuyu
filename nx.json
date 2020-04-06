@@ -52,6 +52,15 @@
     },
     "sunday-e2e": {
       "tags": []
+    },
+    "customer-portal": {
+      "tags": []
+    },
+    "customer-portal-e2e": {
+      "tags": []
+    },
+    "auth": {
+      "tags": []
     }
   }
 }

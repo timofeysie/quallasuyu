@@ -706,8 +706,6 @@
         }
       }
     },
-
-
     "sunday-e2e": {
       "root": "apps/sunday-e2e",
       "projectType": "application",
@@ -732,6 +730,154 @@
             "tsConfig": "apps/sunday-e2e/tsconfig.e2e.json",
             "exclude": ["**/node_modules/**"]
           }
+        }
+      }
+    },
+    "customer-portal": {
+      "root": "apps/customer-portal/",
+      "sourceRoot": "apps/customer-portal/src",
+      "projectType": "application",
+      "prefix": "app",
+      "schematics": {
+        "@nrwl/schematics:component": {
+          "style": "scss"
+        }
+      },
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:browser",
+          "options": {
+            "outputPath": "dist/apps/customer-portal",
+            "index": "apps/customer-portal/src/index.html",
+            "main": "apps/customer-portal/src/main.ts",
+            "polyfills": "apps/customer-portal/src/polyfills.ts",
+            "tsConfig": "apps/customer-portal/tsconfig.app.json",
+            "assets": [
+              "apps/customer-portal/src/favicon.ico",
+              "apps/customer-portal/src/assets"
+            ],
+            "styles": ["apps/customer-portal/src/styles.scss"],
+            "scripts": [],
+            "es5BrowserSupport": true
+          },
+          "configurations": {
+            "production": {
+              "fileReplacements": [
+                {
+                  "replace": "apps/customer-portal/src/environments/environment.ts",
+                  "with": "apps/customer-portal/src/environments/environment.prod.ts"
+                }
+              ],
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "extractCss": true,
+              "namedChunks": false,
+              "aot": true,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": true,
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "2mb",
+                  "maximumError": "5mb"
+                }
+              ]
+            }
+          }
+        },
+        "serve": {
+          "builder": "@angular-devkit/build-angular:dev-server",
+          "options": {
+            "browserTarget": "customer-portal:build"
+          },
+          "configurations": {
+            "production": {
+              "browserTarget": "customer-portal:build:production"
+            }
+          }
+        },
+        "extract-i18n": {
+          "builder": "@angular-devkit/build-angular:extract-i18n",
+          "options": {
+            "browserTarget": "customer-portal:build"
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "apps/customer-portal/tsconfig.app.json",
+              "apps/customer-portal/tsconfig.spec.json"
+            ],
+            "exclude": ["**/node_modules/**"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/builders:jest",
+          "options": {
+            "jestConfig": "apps/customer-portal/jest.config.js",
+            "tsConfig": "apps/customer-portal/tsconfig.spec.json",
+            "setupFile": "apps/customer-portal/src/test-setup.ts"
+          }
+        }
+      }
+    },
+    "customer-portal-e2e": {
+      "root": "apps/customer-portal-e2e",
+      "projectType": "application",
+      "prefix": "",
+      "architect": {
+        "e2e": {
+          "builder": "@nrwl/builders:cypress",
+          "options": {
+            "cypressConfig": "apps/customer-portal-e2e/cypress.json",
+            "tsConfig": "apps/customer-portal-e2e/tsconfig.e2e.json",
+            "devServerTarget": "customer-portal:serve"
+          },
+          "configurations": {
+            "production": {
+              "devServerTarget": "customer-portal:serve:production"
+            }
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": "apps/customer-portal-e2e/tsconfig.e2e.json",
+            "exclude": ["**/node_modules/**"]
+          }
+        }
+      }
+    },
+    "auth": {
+      "root": "libs/auth",
+      "sourceRoot": "libs/auth/src",
+      "projectType": "library",
+      "prefix": "app",
+      "architect": {
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "libs/auth/tsconfig.lib.json",
+              "libs/auth/tsconfig.spec.json"
+            ],
+            "exclude": ["**/node_modules/**"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/builders:jest",
+          "options": {
+            "jestConfig": "libs/auth/jest.config.js",
+            "tsConfig": "libs/auth/tsconfig.spec.json"
+          }
+        }
+      },
+      "schematics": {
+        "@nrwl/schematics:component": {
+          "styleext": "scss"
         }
       }
     }
