@@ -3,7 +3,8 @@ import { NgModule } from '@angular/core';
 import { AppComponent } from './app.component';
 import { RouterModule } from '@angular/router';
 import { authRoutes, AuthModule } from '@myorg/auth';
-import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { LayoutModule } from '@myorg/layout';
 
 @NgModule({
   declarations: [AppComponent],
@@ -11,7 +12,8 @@ import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
     BrowserModule,
     BrowserAnimationsModule,
     RouterModule.forRoot([{path: 'auth', children: authRoutes}], { initialNavigation: 'enabled' }),
-    AuthModule
+    AuthModule,
+    LayoutModule
   ],
   providers: [],
   bootstrap: [AppComponent]

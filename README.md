@@ -296,7 +296,34 @@ Causes this VSCode squiggly mouseover error:
 Can't bind to 'formGroup' since it isn't a known property of 'form'.
 ```
 
-Should ReactiveFormsModule be in the imports, not the declarations?
+Should ReactiveFormsModule be in the imports, not the declarations?  This went away after opening a different project in VSCode and then switching back here again.  Faster than a restart.
+
+Next, step 8 - Layout Lib and BehaviorSubjects.
+
+```bash
+ng g lib layout --prefix app
+ng g c containers/layout --project=layout
+```
+
+warning Lockfile has incorrect entry for "@angular/flex-layout@^7.0.0". Ignoring it.
+? Please choose a version of "@angular/flex-layout" from this list: (Use arrow keys)
+The later version 7 choice on the list was 7.0.0-beta-24.  In fact all choices were beta.  If this was for work I would actually look into this a bit more.
+
+Getting the gyp configure error which ends like this:
+```bash
+gyp ERR! stack Error: Command failed: C:\\Windows\\py.exe -c import sys; print \"%s.%s.%s\" % sys.C:\\Users\\timof\\repos\\timofeysie\\quallasuyu\\node_modules\\@angular-devkit\\build-angular\\node_modules\\node-sass
+```
+
+Might just need to rebuild node-sass?  As it is, the new layout "lib" is there and the app compiles and runs.  
+
+There are a few typos and mistakes on this step.  Duncan!  But, we do get some juicy stuff at the end when he says: *Extras: Convert Layout component into a pure container component  Add a toolbar presentational component. Pass user into presentational component via inputs.*
+
+That's the functional stuff coming out again.  Good idea.  Except, who here is ready to get on with the NgRx state management implementation?  I am!  Only one more step to go: step 9 - Route Guards and Products Lib.
+
+```bash
+ng g lib products --routing --lazy --prefix=app --parent-module=apps/customer-portal/src/app/app.module.ts
+```
+
 
 
 ## Fixing existing issues from 2019
