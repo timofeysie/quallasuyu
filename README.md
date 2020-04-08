@@ -202,6 +202,78 @@ I'm pretty sure this was running before.  There is a list of myorg indexes in th
 
 That doesn't help.  Also, it's not in the complete tutorial code.  The only thing needed seems to be a type definition .d.ts file and an index exporting it.  Fine.  We already have a data lib for the same purpose that has a todo interface in it.  Just add the authentication interface there and move on.
 
+```bash
+npm install @angular/material @angular/cdk @angular/flex-layout @angular/animations
+yarn add @angular/material @angular/cdk @angular/flex-layout @angular/animations
+```
+
+There was no indication of the kind of component lib to use.  Just assuming Angular, but Duncan, dude, you could do a bit better with the explanations.
+
+```bash
+? What framework should this library use? Angular    [ https://angular.io/ ]
+```
+
+Next issue:
+
+```bash
+ERROR in libs/material/src/lib/material.module.ts(16,8): error TS2306: File 'C:/Users/timof/repos/timofeysie/quallasuyu/node_modules/@angular/material/index.d.ts' is not a module.
+```
+
+Thanks to [this SO answer](https://stackoverflow.com/questions/58594311/angular-material-index-d-ts-is-not-a-module), we know that it's a Angular 9 breaking change probably for tree shaking purposes.  So instead of doing a single line import with stuff like this:
+
+```bash
+import {
+  ...
+  MatSelectModule
+} from '@angular/material';
+```
+
+We have to do this:
+
+```bash
+...
+import { MatSelectModule } from '@angular/material/select';
+```
+
+Then however, there are more errors:
+
+```bash
+ERROR in node_modules/@angular/cdk/coercion/array.d.ts(10,60): error TS1005: ',' expected.
+node_modules/@angular/cdk/coercion/array.d.ts(10,61): error TS1005: ',' expected.
+node_modules/@angular/cdk/coercion/array.d.ts(10,75): error TS1144: '{' or ';' expected.
+node_modules/@angular/cdk/coercion/array.d.ts(10,77): error TS1011: An element access expression should take an argument.
+```
+
+We may not be so lucky this time, the only whiff of this on Google is this [as yet unanswered question](https://stackoverflow.com/questions/60949170/cannot-import-matdialogmodule-in-app-module).  The asker has an Angular version mismatch:
+
+```TypeScript
+        "@angular/animations": "^7.2.16",
+        "@angular/cdk": "^9.2.0",
+        "@angular/common": "~7.2.0",
+        "@angular/compiler": "~7.2.0",
+        "@angular/core": "~7.2.0",
+        "@angular/forms": "~7.2.0",
+        "@angular/material": "^9.2.0",
+```
+
+Since we have Angular 7, we actually need to install Material 7.  Duncan did actually point this out at the top of section 6: *Always use the same Major version of Material as your Angular CLI and packages.*
+
+Manually changed those imports to 7.0.0.  Then got this error running yar (same as npm i by the way):
+
+```bash
+gyp ERR! configure error
+gyp ERR! stack Error: Command failed: C:\\Windows\\py.exe -c import sys; print \"%s.%s.%s\" % sys.version_info[:3];
+gyp ERR! stack   File \"<string>\", line 1
+gyp ERR! stack     import sys; print \"%s.%s.%s\" % sys.version_info[:3];
+gyp ERR! stack SyntaxError: invalid syntax
+gyp ERR! stack     at ChildProcess.exithandler (child_process.js:304:12)
+```
+
+However, this does not stop the serve and we get our styles, even with the separate imports.  I was thinking I would have to revert all those import changes.  Thanks Dunkin.  Sorry about the earler comment.  There is even a link to some [flex examples](
+https://tburleson-layouts-demos.firebaseapp.com/#/docs).
+
+Getting to the enterprise stuff, mainly, forms.
+
 
 ## Fixing existing issues from 2019
 

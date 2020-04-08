@@ -20,7 +20,8 @@
       "@myorg/home": ["libs/home/src/index.ts"],
       "@myorg/gifs": ["libs/gifs/src/index.ts"],
       "@myorg/auth": ["libs/auth/src/index.ts"],
-      "@myorg/data-models": ["libs/data-models/src/index.ts"]
+      "@myorg/data-models": ["libs/data-models/src/index.ts"],
+      "@myorg/material": ["libs/material/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]
