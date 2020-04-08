@@ -16,4 +16,8 @@ export class LayoutComponent implements OnInit {
   ngOnInit() {
     this.user$ = this.authService.user$;
   }
+
+  logout() {
+    this.authService.logout();
+  }
 }

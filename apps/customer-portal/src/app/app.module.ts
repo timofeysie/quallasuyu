@@ -4,6 +4,7 @@ import { AppComponent } from './app.component';
 import { RouterModule } from '@angular/router';
 import { authRoutes, AuthModule } from '@myorg/auth';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { AuthGuard } from '@myorg/auth';
 import { LayoutModule } from '@myorg/layout';
 
 @NgModule({
@@ -11,7 +12,15 @@ import { LayoutModule } from '@myorg/layout';
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
-    RouterModule.forRoot([{path: 'auth', children: authRoutes}], { initialNavigation: 'enabled' }),
+    RouterModule.forRoot([
+      { path: '', pathMatch: 'full', redirectTo: 'products' },
+      { path: 'auth', children: authRoutes },
+      {
+        path: 'products',
+        loadChildren: '@myorg/products#ProductsModule',
+        canActivate: [AuthGuard]
+      }
+    ]),
     AuthModule,
     LayoutModule
   ],

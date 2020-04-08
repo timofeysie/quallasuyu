@@ -67,6 +67,9 @@
     },
     "layout": {
       "tags": ["layout"]
+    },
+    "products": {
+      "tags": ["products"]
     }
   }
 }

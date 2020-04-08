@@ -22,7 +22,8 @@
       "@myorg/auth": ["libs/auth/src/index.ts"],
       "@myorg/data-models": ["libs/data-models/src/index.ts"],
       "@myorg/material": ["libs/material/src/index.ts"],
-      "@myorg/layout": ["libs/layout/src/index.ts"]
+      "@myorg/layout": ["libs/layout/src/index.ts"],
+      "@myorg/products": ["libs/products/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]

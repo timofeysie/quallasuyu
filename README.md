@@ -322,9 +322,29 @@ That's the functional stuff coming out again.  Good idea.  Except, who here is r
 
 ```bash
 ng g lib products --routing --lazy --prefix=app --parent-module=apps/customer-portal/src/app/app.module.ts
+ng g c containers/products --project=products
+ng g guard guards/auth/auth --project=auth
 ```
 
+Again had to choose the version and see the gyp error on the products generation line up there.
+I chose a version of "@angular/flex-layout" from this list: 7.0.0-beta.24 again.
 
+I saw this in the code for the previous section but there was no mention of adding it in any of the steps so far:
+
+```bash
+import { NxModule } from '@nrwl/nx';
+```
+
+Looks like it first showed up in step 6 when adding Material.  It doesn't show up in the "// Added" comments that usually accompany new lines of code in the articles.  It is a pretty long tutorial, and high difficulty level, so there's a lot to cover.  I don't hold it against Duncan at all.  It's just it pays to pay attention to the quality of samples from the internet to weigh the veracity of the concepts being used.  Knowing Duncan personally through meetups, I can vouch for the accuracy of the material.  However, again in step 9 there are some silly errors in the docs, such as repeated and unused imports.  I know editing is hard.  I don't like to edit which is why I never want to go the extra steps to publish any blogs although these readme files are almost blogs in themselves.  It's good to be reminded of the level of work needed to produce a tutorial of this length, and what users feel like about the last 1% of editing.
+
+The auth guard generation also asked some questions:
+*? Which interfaces would you like to implement? CanActivate*.  There are other interfaces to implement, but that is the only one used in the sample code.
+
+Again there are Extras in this step, such as "Add logout functionality" and "Add angular interceptor".
+
+If we want to update the auth service to set a token in local storage, we can come back to this later.
+
+Finally, [step 10: NgRx](https://duncanhunter.gitbook.io/enterprise-angular-applications-with-ngrx-and-nx/10-ngrx-introduction)
 
 ## Fixing existing issues from 2019
 
