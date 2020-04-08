@@ -83,10 +83,77 @@ ng g lib auth --routing --prefix=app --parent-module=apps/customer-portal/src/ap
 ng s --project=customer-portal
 ```
 
+There was a problem on the next step.
+
 ```bash
 ng g c containers/login --project=auth
 Could not find an NgModule. Use the skip-import option to skip importing in NgModule.
 ```
+
+There is no accepted answer to [this question](https://stackoverflow.com/questions/51200919/could-not-find-an-ngmodule-use-the-skip-import-option-to-skip-importing-in-ngmo).
+
+If we cd into the app directory, will the --project=auth still work?
+
+Worth answering.  Using the --skip-import flag:
+
+```bash
+>ng g c containers/login --project=auth --skip-import
+CREATE libs/auth/src/lib/containers/login/login.component.html (24 bytes)
+CREATE libs/auth/src/lib/containers/login/login.component.spec.ts (621 bytes)
+CREATE libs/auth/src/lib/containers/login/login.component.ts (266 bytes)
+CREATE libs/auth/src/lib/containers/login/login.component.scss (0 bytes)
+```
+
+Moving on.  This is step 3 and it isn't until step 11 that ngrx starts.
+
+```bash
+>ng g c components/login-form --project=auth --skip-import
+CREATE libs/auth/src/lib/components/login-form/login-form.component.html/spec.ts/.ts.scss
+```
+
+Why are we putting a login form in an auth lib?  And where is the AuthModule?
+
+There is this file:
+
+libs\auth\src\index.ts
+
+But the Duncan shows this file:
+
+libs/auth/src/auth.module.ts
+
+Should the latter be created and added to the former?
+
+There is a [GitHub](https://github.com/duncanhunter/Demo-App-NDC-Oslo-2018-Enterprise-Angular-applications-with-ngrx-and-nx) that should have all the completed code in it.
+
+The index.ts 'barrel' file looks like this:
+
+```bash
+export * from './lib/auth.module';
+export { AuthService } from './lib/services/auth/auth.service';
+export { AuthGuard } from './lib/guards/auth/auth.guard';
+export { AuthState } from './lib/+state/auth.reducer';
+export * from './lib/+state/auth.actions';
+export * from './lib/+state';
+```
+
+But the auth module is here:
+
+```bash
+libs\auth\src\lib\auth.module.ts
+```
+
+So if we just move our auth module file into the lib directory, that would be OK?  Just a little worried because Duncan didn't say it was a new file.  It just said:
+*3. Add a default route to the auth module*
+
+Anyhow, making that changes works.  The /auth/login route works.
+
+Remaining work in this section:
+
+* Add presentational component to container component
+* Add new folder for shared interfaces
+* Change the ChangeDetectionStrategy to OnPush
+
+Added shared interface, container and presentational components, now it's on to step 4.
 
 ## Fixing existing issues
 
