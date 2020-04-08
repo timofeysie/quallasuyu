@@ -269,10 +269,34 @@ gyp ERR! stack SyntaxError: invalid syntax
 gyp ERR! stack     at ChildProcess.exithandler (child_process.js:304:12)
 ```
 
-However, this does not stop the serve and we get our styles, even with the separate imports.  I was thinking I would have to revert all those import changes.  Thanks Dunkin.  Sorry about the earler comment.  There is even a link to some [flex examples](
+However, this does not stop the serve and we get our styles, even with the separate imports.  I was thinking I would have to revert all those import changes.  Thanks Dunkan.  Sorry about the earlier comment.  There is even a link to some [flex examples](
 https://tburleson-layouts-demos.firebaseapp.com/#/docs).
 
 Getting to the enterprise stuff, mainly, forms.
+
+A nice comment Duncan makes at the start is great: *To save injecting the formBuilder and keeping this a presentational component with no injected dependencies we can just new up a simple FormGroup. You can read more about it here.*
+
+He's talking React there and functional components.  I mean, keeping the constructor clear of injections as much as possible, and reducing member variables is the way to keep Angular from getting too "classy".  I mean, a form group is like state management for a particular part of the app.  Hello Redux.
+
+A few errors to get through:
+
+```bash
+compiler.js:2430 Uncaught Error: Unexpected module 'ReactiveFormsModule' declared by the module 'AuthModule'. Please add a @Pipe/@Directive/@Component annotation.
+```
+
+Also, this line:
+
+```bash
+  <form [formGroup]="loginForm" fxLayout="column" fxLayoutAlign="center none">
+```
+
+Causes this VSCode squiggly mouseover error:
+
+```bash
+Can't bind to 'formGroup' since it isn't a known property of 'form'.
+```
+
+Should ReactiveFormsModule be in the imports, not the declarations?
 
 
 ## Fixing existing issues from 2019
