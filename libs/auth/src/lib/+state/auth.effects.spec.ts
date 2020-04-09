@@ -1,45 +1,37 @@
-import { TestBed, async } from '@angular/core/testing';
+// import { TestBed } from '@angular/core/testing';
+// import { StoreModule } from '@ngrx/store';
+// import { provideMockActions } from '@ngrx/effects/testing';
+// import { DataPersistence } from '@nrwl/nx';
+// import { hot } from '@nrwl/nx/testing';
 
-import { Observable } from 'rxjs';
+// import { ProductsEffects } from './products.effects';
+// import { LoadProductsSuccess, LoadProductsFail } from './products.actions';
 
-import { EffectsModule } from '@ngrx/effects';
-import { StoreModule } from '@ngrx/store';
-import { provideMockActions } from '@ngrx/effects/testing';
+// import { Observable } from 'rxjs';
 
-import { NxModule } from '@nrwl/nx';
-import { DataPersistence } from '@nrwl/nx';
-import { hot } from '@nrwl/nx/testing';
+// describe('ProductsEffects', () => {
+//   let actions$: Observable<any>;
+//   let effects$: ProductsEffects;
 
-import { AuthEffects } from './auth.effects';
-import { LoadAuth, AuthLoaded } from './auth.actions';
+//   beforeEach(() => {
+//     TestBed.configureTestingModule({
+//       imports: [StoreModule.forRoot({})],
+//       providers: [
+//         ProductsEffects,
+//         DataPersistence,
+//         provideMockActions(() => actions$)
+//       ]
+//     });
 
-describe('AuthEffects', () => {
-  let actions: Observable<any>;
-  let effects: AuthEffects;
+//     effects$ = TestBed.get(ProductsEffects);
+//   });
 
-  beforeEach(() => {
-    TestBed.configureTestingModule({
-      imports: [
-        NxModule.forRoot(),
-        StoreModule.forRoot({}),
-        EffectsModule.forRoot([])
-      ],
-      providers: [
-        AuthEffects,
-        DataPersistence,
-        provideMockActions(() => actions)
-      ]
-    });
-
-    effects = TestBed.get(AuthEffects);
-  });
-
-  describe('loadAuth$', () => {
-    it('should work', () => {
-      actions = hot('-a-|', { a: new LoadAuth() });
-      expect(effects.loadAuth$).toBeObservable(
-        hot('-a-|', { a: new AuthLoaded([]) })
-      );
-    });
-  });
-});
+//   describe('someEffect', () => {
+//     it('should work', () => {
+//       actions$ = hot('-a-|', { a: new LoadProductsSuccess({}) });
+//       expect(effects$.loadProducts$).toBeObservable(
+//         hot('-a-|', { a: new LoadProductsFail({}) })
+//       );
+//     });
+//   });
+// });

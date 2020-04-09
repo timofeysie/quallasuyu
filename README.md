@@ -90,7 +90,7 @@ Answered no to both of these questions:
 ```
 
 Is this a typo?
-*Add NgRx Auth lib making it a state state*
+*Add NgRx Auth lib making it0 a state state*
 
 Whichever, the second command creates the plus directory:
 ```bash
@@ -105,6 +105,92 @@ The x is for these x.ts files:
 * selectors/spec
 
 And that's it for that section.  Next is *Strong Typing the State and Actions*.  I think it's worth a commit just so we have a record of what the changes for the strong typing are.
+
+Aside from the strong typings, the actions are more specific.  The generic actions were:
+
+```bash
+  LoadAuth = '[Auth] Load Auth',
+  AuthLoaded = '[Auth] Auth Loaded',
+  AuthLoadError = '[Auth] Auth Load Error'
+```
+
+The new actions are:
+
+```bash
+  Login = '[Auth Page] Login',
+  LoginSuccess = '[Auth API] Login Success',
+  LoginFail = '[Auth API] Login Fail'
+```
+
+The errors now on serve are:
+
+```bash
+ERROR in libs/auth/src/lib/+state/auth.effects.ts(7,3): error TS2305: 
+Module '"C:/Users/timof/repos/timofeysie/quallasuyu/libs/auth/src/lib/+state/auth.actions"' has no exported member 'LoadAuth'.
+
+libs/auth/src/lib/+state/auth.effects.ts(8,3): error TS2305: 
+Module '"C:/Users/timof/repos/timofeysie/quallasuyu/libs/auth/src/lib/+state/auth.actions"' has no exported member 'AuthLoaded'.
+
+libs/auth/src/lib/+state/auth.effects.ts(9,3): error TS2305: 
+Module '"C:/Users/timof/repos/timofeysie/quallasuyu/libs/auth/src/lib/+state/auth.actions"' has no exported member 'AuthLoadError'.
+
+libs/auth/src/lib/+state/auth.effects.ts(15,68): error TS2339: 
+Property 'LoadAuth' does not exist on type 'typeof AuthActionTypes'.
+
+libs/auth/src/lib/+state/auth.reducer.ts(1,10): error TS2724: 
+Module '"C:/Users/timof/repos/timofeysie/quallasuyu/libs/auth/src/lib/+state/auth.actions"' has no exported member 'AuthAction'. Did you mean 'AuthActions'?
+
+libs/auth/src/lib/+state/auth.reducer.ts(37,26): error TS2339: 
+Property 'AuthLoaded' does not exist on type 'typeof AuthActionTypes'.
+```
+
+The default actions created do not match what is imported in the default reducer.
+
+```bash
+import { AuthAction, AuthActionTypes } from './auth.actions';
+```
+
+```bash
+export type AuthActions = Login | LoginSuccess | LoginFail;
+```
+
+So yes, we need an 's'.  Then we get this:
+```bash
+WARNING in C:/Users/timof/repos/timofeysie/quallasuyu/libs/auth/src/lib/auth.module.ts 28:39-55
+"export 'AUTH_FEATURE_KEY' was not found in './+state/auth.reducer'
+
+WARNING in C:/Users/timof/repos/timofeysie/quallasuyu/libs/auth/src/lib/+state/auth.selectors.ts 4:41-57
+"export 'AUTH_FEATURE_KEY' was not found in './auth.reducer'
+
+WARNING in C:/Users/timof/repos/timofeysie/quallasuyu/libs/auth/src/lib/+state/auth.effects.ts 17:27-40
+"export 'AuthLoadError' was not found in './auth.actions'
+
+WARNING in C:/Users/timof/repos/timofeysie/quallasuyu/libs/auth/src/lib/+state/auth.effects.ts 13:27-37
+"export 'AuthLoaded' was not found in './auth.actions'
+
+WARNING in Duplicated path in loadChildren detected during a rebuild. We will take the latest version detected and override it to save rebuild time. You should perform a full build to validate that your routes don't overlap.
+i ｢wdm｣: Compiled with warnings.
+```
+
+The app also has this in the console:
+
+```bash
+Error: StaticInjectorError(AppModule)[AuthEffects -> DataPersistence]: 
+  StaticInjectorError(Platform: core)[AuthEffects -> DataPersistence]: 
+    NullInjectorError: No provider for DataPersistence!
+```
+
+There are still some changes missing from this section.  Step 12 just finishes with the action file and some partial reduces.  Looking at the code for the completed project, there is no auth.selectors.ts file.  After removing that, the app runs, and there are just these warnings remaining:
+
+```bash
+WARNING in C:/Users/timof/repos/timofeysie/quallasuyu/libs/auth/src/lib/auth.module.ts 28:39-55
+"export 'AUTH_FEATURE_KEY' was not found in './+state/auth.reducer'
+
+WARNING in C:/Users/timof/repos/timofeysie/quallasuyu/libs/auth/src/lib/+state/auth.selectors.ts 4:41-57
+"export 'AUTH_FEATURE_KEY' was not found in './auth.reducer'
+```
+
+
 
 ## The Duncan Hunter
 
