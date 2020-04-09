@@ -29,6 +29,11 @@
   },
   "private": true,
   "dependencies": {
+    "@ngrx/store": "7.2.0",
+    "@ngrx/effects": "7.2.0",
+    "@ngrx/entity": "7.2.0",
+    "@ngrx/router-store": "7.2.0",
+    "@nrwl/nx": "7.8.0",
     "@angular/animations": "^7.0.0",
     "@angular/cdk": "^7.0.0",
     "@angular/common": "^7.0.0",
@@ -66,6 +71,8 @@
     "zone.js": "^0.8.26"
   },
   "devDependencies": {
+    "@ngrx/store-devtools": "7.2.0",
+    "ngrx-store-freeze": "0.2.4",
     "jest-preset-angular": "7.0.0",
     "@angular-devkit/build-angular": "~0.13.0",
     "@angular/cli": "7.3.1",

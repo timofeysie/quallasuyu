@@ -76,6 +76,36 @@ npm install -g @nrwl/cli
 
 Note: [This article suggests](https://dev.to/stereobooster/typescript-monorepo-for-react-project-3cpa) using yarn instead of npm in a monorepo because it supports workspaces to link cross-dependencies.
 
+## Adding NgRx to the customer portal
+
+```bash
+> ng g ngrx app --module=apps/customer-portal/src/app/app.module.ts  --onlyEmptyRoot
+> ng generate ngrx auth --module=libs/auth/src/lib/auth.module.ts
+```
+
+Answered no to both of these questions:
+```bash
+? Is this the root state of the application? No
+? Would you like to add a Facade to your ngrx state No
+```
+
+Is this a typo?
+*Add NgRx Auth lib making it a state state*
+
+Whichever, the second command creates the plus directory:
+```bash
+libs/auth/src/lib/+state/auth.x
+```
+
+The x is for these x.ts files:
+
+* actions
+* effects/spec
+* reducer/spec
+* selectors/spec
+
+And that's it for that section.  Next is *Strong Typing the State and Actions*.  I think it's worth a commit just so we have a record of what the changes for the strong typing are.
+
 ## The Duncan Hunter
 
 Despite it being two years old now, there is not that much out there that covers using NgRx with the nx CLI.  Duncan kind of owns the field, so it's worth going through [his process](https://duncanhunter.gitbook.io/enterprise-angular-applications-with-ngrx-and-nx/3-generating-components-and-nx-lib) as it was two years ago figuring there are a lot of people in Sydney who started off with that also.  And since this repo is a year behind also, should be a decent fit for all the deps.
