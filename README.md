@@ -11,6 +11,7 @@ This project was generated using [Nx](https://nx.dev).
 ## Table of contents
 
 * [Workflow](#workflow)
+* [NgRx and Nx](#ngRx-and-Nx)
 * [@nxtend/ionic-react](*@nxtend/ionic-react)
 * [The pros and cons of a monorepo projects](#the-pros-and-cons-of-a-monorepo)
 * [Converting code to Typescript in NodeJS](#converting-code-to-Typescript-in-NodeJS)
@@ -217,9 +218,122 @@ Other things to notice at this point is that the logout function doesn't registe
 ERROR in libs/auth/src/lib/auth.module.ts(12,3): error TS2305: Module '"C:/Users/timof/repos/timofeysie/quallasuyu/libs/auth/src/lib/+state/auth.reducer"' has no exported member 'AUTH_FEATURE_KEY'.
 ```
 
+That was some old code in the auth module.  After that, a new Effect action was added to navigate on LoginSuccess, update AuthGuard to use the store and in the customer portal component on-load, check local storage and dispatch a LoginSuccess action and we navigate to the products page, which is still not implemented.
 
+Next, selectors.  [The first step](https://duncanhunter.gitbook.io/enterprise-angular-applications-with-ngrx-and-nx/14-ngrx-selectors) is to create in index file for the store.  Wait, didn't we have a selector file and delete it?  Why not call it auth.selector.ts, and not index.ts, which is like a barrel file?
 
-## The Duncan Hunter
+The sample code shows the libs/auth/src/lib/+state/products.selectors.ts file.  In this file, it references files that don't exist yet.
+
+```TypeScript
+import { ProductsState, ProductsData } from './products.reducer';
+import * as fromProduct from './products.reducer';
+```
+
+There is actually an auth reducer in the source file.  Maybe Duncan made a mistake with the source files he posted?  The next step is to add the products feature module, so instead of trying to figure out what was intended in this short step with almost no explanations, it might be just better to move on to step 15 for now.
+
+Moving on, there is a typo on the next step brief: *In this section we challenge you understanding by adding a Products module like we did for login*.  "You" should be "your".
+
+Going along with it,
+
+```bash
+ng generate ngrx products --module=libs/products/src/lib/products.module.ts
+? Is this the root state of the application? No
+? Would you like to add a Facade to your ngrx state No
+```
+
+Not sure if those are the correct answers.  It would be nice if the Duncan prepared the reader for this kind of thing, or most likely, these questions were added to the schema after he wrote this tutorial.  And the scale of the tutorial made updating it troublesome.
+
+Add Products Action Creators
+
+```TypeScript
+  LoadProducts = '[Products Page] Load Products',
+  LoadProductsSuccess = '[Products API] Load Products Success',
+  LoadProductsFail = '[Products API] LoadProducts Fail'
+```
+
+Next, make a new ProductsService in products module, add an effect, a reducer
+
+```bash
+ng g service services/products/products --project=products
+```
+
+Decided to change the non-standard class urls from this:
+
+```TypeScript
+selector: 'demo-app-products',
+```
+
+To this:
+
+```TypeScript
+selector: 'app-products',
+```
+
+Also tried to change this:
+
+```bash
+import { productsQuery } from './../../+state';
+```
+
+To this:
+
+```bash
+import { productsQuery } from '../../+state/products.selectors';
+```
+
+The productsQuery is used like this:
+
+```bash
+this.products$ = this.store.pipe(select(productsQuery.getProducts)
+```
+
+But that causes this mouseover VSCode TypeScript error:
+
+```bash
+Property 'getProducts' does not exist on type '{ getLoaded: MemoizedSelector<object, any>; getError: MemoizedSelector<object, any>; getAllProducts: MemoizedSelector<object, any>; getSelectedProducts: MemoizedSelector<...>; }'.ts(2339)
+```
+
+getProducts is in effects, but productsQuery is in selectors.
+
+The selector looks like this:
+
+```TypeScript
+import { productsQuery } from '../../+state/products.selectors';
+export const productsQuery = {
+  
+  getLoaded,
+  getError,
+  getAllProducts,
+  getSelectedProducts
+};
+...
+this.products$ = this.store.pipe(select(productsQuery.getAllProducts))
+```
+
+See, no getProducts.  Can we use getAllProducts?
+
+There is another error after a bit more work:
+
+```bash
+ERROR in C:/Users/timof/repos/timofeysie/quallasuyu/libs/products/src/lib/containers/products/products.component.ts
+Module not found: Error: Can't resolve '../../+state/products.selectors' in 'C:\Users\timof\repos\timofeysie\quallasuyu\libs\products\src\lib\containers\products'
+```
+
+Instead of the productsQuery import shown above, this works:
+
+```bash
+import { getProducts } from './../../+state';
+...
+this.products$ = this.store.pipe(select(getProducts));
+```
+
+That was just trial an error there.  And then the product list shows up.
+
+This is looking good for a follow up article which focuses on setting up NgRx with Nx.
+
+## NgRx and Nx
+
+This is also know as "The Duncan Hunter".  Looking for any articles that show examples of how to do this is not easy.  The overwhelming results are all Duncan Hunter.  So, this is the saga of implementing the samples from his GitHub book on the subject.
 
 Despite it being two years old now, there is not that much out there that covers using NgRx with the nx CLI.  Duncan kind of owns the field, so it's worth going through [his process](https://duncanhunter.gitbook.io/enterprise-angular-applications-with-ngrx-and-nx/3-generating-components-and-nx-lib) as it was two years ago figuring there are a lot of people in Sydney who started off with that also.  And since this repo is a year behind also, should be a decent fit for all the deps.
 

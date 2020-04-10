@@ -13,3 +13,9 @@ export interface User {
   token: string;
   role: string;
 }
+
+export interface Product {
+  name: string;
+  category: string;
+  id: number;
+}

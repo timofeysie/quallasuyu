@@ -5,6 +5,7 @@ import { User } from '@myorg/data';
 import { Store } from '@ngrx/store';
 import * as authActions from '@myorg/auth';
 import { AuthState } from '@myorg/auth';
+import { productsQuery } from '@myorg/auth';
 
 @Component({
   selector: 'app-layout',
@@ -25,6 +26,7 @@ export class LayoutComponent implements OnInit {
     this.authService.logout();
     this.user$ = this.authService.user$;
     // this.store.dispatch(new authActions.AuthService.Login({}));
+    this.user$ = this.store.select(productsQuery.getUser);
   }
 
 }
