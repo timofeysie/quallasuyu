@@ -331,6 +331,71 @@ That was just trial an error there.  And then the product list shows up.
 
 This is looking good for a follow up article which focuses on setting up NgRx with Nx.
 
+### Use the entity adapter in the products reducer
+
+To get the previous step going we jumped ahead to the code from the completed project.  It's worth noting some details about this step, since there actually is a bit of a description this time.
+Duncan says:  *Extend ProductState with EntityState. By default it will make an entities and ids dictionary. You Add to this any state properties you desire.  Create an adapter and use it 's getInitialState method to make the initial state.*
+
+Why would we need this?  The name is a bit deceiving.  If you look at the products component template from the previous step, you can see that it just dumps the json into the page.  Why is this?  Material design would make it easy to create a beautiful list, right?
+
+```TypeScript
+<div *ngFor="let product of products">
+  {{product.name}}
+</div>
+```
+
+The real reson you need entity is that the above causes this classic error:
+```bash
+Cannot find a differ supporting object '[object Object]' of type 'object'. NgFor only supports binding to Iterables such as Arrays.
+```
+
+Making a commit and getting the serve starting again showed this error on the previously working code:
+
+```bash
+Cannot find module '@angular/compiler'
+Require stack:
+- C:\Users\timof\repos\timofeysie\quallasuyu\node_modules\@angular\compiler-cli\index.js
+```
+
+Tried this:
+
+```bash
+yarn
+```
+
+Then there was this error:
+
+```bash
+ERROR in libs/layout/src/lib/containers/layout/layout.component.ts(8,10): error TS2305: Module '"C:/Users/timof/repos/timofeysie/quallasuyu/libs/auth/src"' has no exported member 'productsQuery'.
+libs/products/src/index.ts(2,15): error TS2307: Cannot find module './lib/+state/products.selectors'.
+```
+
+Restarted and also restarted the editor and the same code now runs.
+
+So back to entity, it's installed like this:
+
+```bash
+npm install @ngrx/entity
+```
+
+[The official docs](https://ngrx.io/guide/entity) say *Entity State adapter for managing record collections.*
+
+There is no code on that page.  Despite the one line to install it, the following link is provided: *Detailed installation instructions can be found on the Installation page.*.  Thanks.  That's not what we need more detail on.
+
+There is actually a lot of details [thanks to Duncan's like](https://github.com/ngrx/platform/blob/master/docs/entity/adapter.md).
+
+Here are some more detail:
+
+```TypeScript
+export interface ProductsData extends EntityState<Product> {
+```
+
+This is the first time I notice that the whole project in the complete project code in named user-portal and not customer-portal like it is here.  That could be why the file in the Duncan code shows a file called users.reducer.ts.  So we should be able to just change the name of the file, which is all about products anyhow.  I'm waiting for the product list component by the way.
+
+
+ERROR in libs/layout/src/lib/containers/layout/layout.component.ts(8,10): error TS2305: Module '"C:/Users/timof/repos/timofeysie/quallasuyu/libs/auth/src"' has no exported member 'productsQuery'.
+
+
 ## NgRx and Nx
 
 This is also know as "The Duncan Hunter".  Looking for any articles that show examples of how to do this is not easy.  The overwhelming results are all Duncan Hunter.  So, this is the saga of implementing the samples from his GitHub book on the subject.
