@@ -190,6 +190,33 @@ WARNING in C:/Users/timof/repos/timofeysie/quallasuyu/libs/auth/src/lib/+state/a
 "export 'AUTH_FEATURE_KEY' was not found in './auth.reducer'
 ```
 
+At this point, we have logged and logged out states, and we can see this in the Redux Chrome dev tools tab.
+
+That says:
+
+```bash
+[Auth Page] Login {
+  undefined: {
+    loading: false => true
+  }
+}
+[Auth API] Login Success {
+  undefined: {
+    loading: true => false
+  }
+}
+```
+
+So that's true.  Login succeeds, and the loader turns false.
+
+But, the undefined is not helpful, and it seems that the Login action should not be about loading.  Shouldn't it say something like "authenticated: false => true"?
+
+Other things to notice at this point is that the logout function doesn't register in the Redux tab.  After a break, starting the server again, we see this error:
+
+```bash
+ERROR in libs/auth/src/lib/auth.module.ts(12,3): error TS2305: Module '"C:/Users/timof/repos/timofeysie/quallasuyu/libs/auth/src/lib/+state/auth.reducer"' has no exported member 'AUTH_FEATURE_KEY'.
+```
+
 
 
 ## The Duncan Hunter

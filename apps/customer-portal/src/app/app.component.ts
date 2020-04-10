@@ -1,4 +1,7 @@
 import { Component } from '@angular/core';
+import { Store } from '@ngrx/store';
+import { AuthState } from '@myorg/auth';
+import { LoginSuccess } from '@myorg/auth';
 
 @Component({
   selector: 'app-root',
@@ -6,5 +9,13 @@ import { Component } from '@angular/core';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
-  title = 'customer-portal';
+  title = 'app';
+
+  constructor(private store: Store<AuthState>){
+      const user = JSON.parse(localStorage.getItem('user'));
+      if(user) {
+        this.store.dispatch(new LoginSuccess(user))
+      }
+    };
+
 }

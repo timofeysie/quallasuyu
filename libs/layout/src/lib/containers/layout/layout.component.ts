@@ -2,6 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { AuthService } from '@myorg/auth'
 import { Observable } from 'rxjs';
 import { User } from '@myorg/data';
+import { Store } from '@ngrx/store';
+import * as authActions from '@myorg/auth';
+import { AuthState } from '@myorg/auth';
 
 @Component({
   selector: 'app-layout',
@@ -11,7 +14,8 @@ import { User } from '@myorg/data';
 export class LayoutComponent implements OnInit {
   user$: Observable<User>;
 
-  constructor(private authService: AuthService) {}
+  constructor(private authService: AuthService,
+    private store: Store<AuthState>) {}
 
   ngOnInit() {
     this.user$ = this.authService.user$;
@@ -19,5 +23,8 @@ export class LayoutComponent implements OnInit {
 
   logout() {
     this.authService.logout();
+    this.user$ = this.authService.user$;
+    // this.store.dispatch(new authActions.AuthService.Login({}));
   }
+
 }
