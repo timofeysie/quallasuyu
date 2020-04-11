@@ -51,6 +51,10 @@ ng build api // build the app
 ng test api // test the app
 npm run server // start the mock backend on http://localhost:3000
 ng serve customer-portal // the Duncan
+ng build --prod --app=customer-portal
+ng build --prod -app=customer-portal --stats-json
+npm run bundle-report-customer-portal
+npm run dep-graph
 ```
 
 Node server listens on http://localhost:3333/api
@@ -367,7 +371,7 @@ Then there was this error:
 
 ```bash
 ERROR in libs/layout/src/lib/containers/layout/layout.component.ts(8,10): error TS2305: Module '"C:/Users/timof/repos/timofeysie/quallasuyu/libs/auth/src"' has no exported member 'productsQuery'.
-libs/products/src/index.ts(2,15): error TS2307: Cannot find module './lib/+state/products.selectors'.
+libs/products/src/index.ts(2,15): error TS2307: Cannot find module './lib/+state/products.selectors'.0
 ```
 
 Restarted and also restarted the editor and the same code now runs.
@@ -392,9 +396,105 @@ export interface ProductsData extends EntityState<Product> {
 
 This is the first time I notice that the whole project in the complete project code in named user-portal and not customer-portal like it is here.  That could be why the file in the Duncan code shows a file called users.reducer.ts.  So we should be able to just change the name of the file, which is all about products anyhow.  I'm waiting for the product list component by the way.
 
+There were some intermittent errors that were soled by running yarn, restarting the server and restarting VSCode.  Not sure what's causing this and wish I knew exactly when and how to fix this kind of issue:
 
+```bash
 ERROR in libs/layout/src/lib/containers/layout/layout.component.ts(8,10): error TS2305: Module '"C:/Users/timof/repos/timofeysie/quallasuyu/libs/auth/src"' has no exported member 'productsQuery'.
+```
 
+That was an old issue, so I'm guessing there is a compiled file somewhere that wasn't updated.
+
+Anyhow, on to the next step.  The last for the development side of things.
+
+### Step 17 - Router Store
+
+It says it's about the router, but includes the needed product list component.
+
+```bash
+ng g c components/product-list --project=products
+```
+
+It's nice that the CLI adds the new component to the products module for us.
+
+When the markup to pass down the product is added to the container components template, we get another classic Angular error:
+
+```VSCode
+Can't bind to 'products' since it isn't a known property of 'app-product-list'.
+```
+
+That's because we need to add an Input reference in the list component.  Then we can add the list markup to the template, although Duncan lists the file as product-list.component.ts, not .html.  Getting used to this by the end of the tutorial.
+
+After implementing all the steps, we have our products list, and a selector to filter by category.  No explanation of any of the steps except for the header of each step.  And when it's all done, nothing.  Just a link to the next section, which is about deployments.
+
+```bash
+> ng build --prod -a=admin-portal
+Unknown option: '-a'
+```
+
+I think that should either be customer-portal as it shows in step 2, or user-portal as it's called in the completed project code.
+
+As for the error, try a double dash:
+
+```bash
+C:\Users\timof\repos\timofeysie\quallasuyu>ng build --prod --a=customer-portal
+You seem to not be depending on "@angular/core" and/or "rxjs". This is an error.
+```
+
+That's not good.  What I think Duncan means is "--app=customer-portal":
+
+But the error remains.  Worse still, the serve is broken with this error:
+
+```bash
+Error: Cannot find module '@angular/compiler'
+```
+
+The usual yarn and restart doesn't work now.  Trying this long and drawn out approach:
+
+```bash
+> yarn add @angular/compiler-cli --save-dev
+*delete node_modules?*
+> yarn cache clean
+> ng serve customer-portal
+Object prototype may only be an Object or null: undefined
+TypeError: Object prototype may only be an Object or null: undefined
+    at setPrototypeOf (<anonymous>)
+    at Object.__extends (C:\Users\timof\repos\timofeysie\quallasuyu\node_modules\tslib\tslib.js:64:9)
+```
+
+That was a nice idea.  I recommend not to use a folder to delete node_modules on Windows.  It goes through this discovery process for about a minute and then deleting the 141,242 files it "discovered".
+
+According to [these answers](https://stackoverflow.com/questions/57421582/typeerror-object-prototype-may-only-be-an-object-or-null-undefined-angular-8), it's an Angular issue fixed by an upgrade.  Not a bad idea actually.  According to [this answer](https://stackoverflow.com/questions/53122751/typeerror-object-prototype-may-only-be-an-object-or-null-undefined/53123468), it's a circular dependency.
+
+The code was running before stopping the serve and doing the last commit.  So it's something that was compiling before, but not now, for whatever reason.
+
+There is not that much on Google about this.  Things like *I suspect that many will see this error in the future, because a lot of us reexport from a central index.ts. Since we are doing that, it's tempting to import from index.ts in order to shorten the import path instead of importing the module directly.* from [the TS GitHub](https://github.com/Microsoft/TypeScript/issues/283140).
+
+And *We find that they essentially always indicate poor layering in the engineering design.* as a duplicate [of this](https://github.com/microsoft/TypeScript/pull/21780).
+
+If *cyclical dependencies lead to maintainability problems*, but the app was working fine at this point, could we ignore this particular instance?  There is nothing helpful in the stack trace to let us know where the problem lies.
+
+There is a noImportCycles option.  Not sure how to set it, but this doesn't work:
+
+```TypeScript
+    "eslint.options": {
+        "rules": {
+            "noImportCycles": false
+        }
+    }
+```
+
+At this point, it's worth just committing the code.  It did work.  It might for someone else, who knows.  Until I can either fix the circular dependencies or upgrade Angular to fix it, right now, not sure.
+
+Here are the remaining commands from step 18:
+
+```bash
+npm install  --save-dev webpack-bundle-analyzer
+ng build --prod -a=customer-portal --stats-json
+npm run bundle-report-customer-portal
+npm run dep-graph
+```
+
+Then, the 18 step guide is done.  No thank you, no debrief.  Nothing.  Feeling like I can contribute to this subject on my own now.  Might try and write a blog about the RxJs used in the effects which is difficult to read for someone who may not be so familiar with the subject.
 
 ## NgRx and Nx
 

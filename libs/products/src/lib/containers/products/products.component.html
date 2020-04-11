@@ -1,4 +1,6 @@
-<p>
-  products works!
-</p>
-{{products$ | async | json}}n}}
+<div fxLayout="row"  fxFlexLayout="center center">
+  <app-product-list 
+        [products]="products$ | async" 
+        (filter)="updateUrlFilters($event)">
+  </app-product-list>      
+</div>

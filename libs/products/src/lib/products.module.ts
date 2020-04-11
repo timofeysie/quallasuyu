@@ -8,6 +8,7 @@ import { productsReducer, initialState as productsInitialState } from './+state/
 import { ProductsEffects } from './+state/products.effects';
 // import { ProductListComponent } from './components/product-list/product-list.component';
 import { MaterialModule } from '@myorg/material';
+import { ProductListComponent } from './components/product-list/product-list.component';
 @NgModule({
   imports: [
     CommonModule,
@@ -18,7 +19,7 @@ import { MaterialModule } from '@myorg/material';
     StoreModule.forFeature('products', productsReducer, { initialState: productsInitialState }),
     EffectsModule.forFeature([ProductsEffects])
   ],
-  declarations: [ProductsComponent],
+  declarations: [ProductsComponent, ProductListComponent],
   providers: [ProductsEffects]
 })
 export class ProductsModule {}

@@ -1,4 +1,9 @@
 {
     "editor.tabSize": 2,
-    "editor.renderIndentGuides": false
+    "editor.renderIndentGuides": false,
+    "eslint.options": {
+        "rules": {
+            "noImportCycles": false
+        }
+    }
 }
