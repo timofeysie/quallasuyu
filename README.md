@@ -11,6 +11,8 @@ This project was generated using [Nx](https://nx.dev).
 ## Table of contents
 
 * [Workflow](#workflow)
+* [Project history](#project-history)
+* [Adding NgRx to the customer portal](#adding-NgRx-to-the-customer-portal)
 * [NgRx and Nx](#ngRx-and-Nx)
 * [@nxtend/ionic-react](*@nxtend/ionic-react)
 * [The pros and cons of a monorepo projects](#the-pros-and-cons-of-a-monorepo)
@@ -80,6 +82,71 @@ npm install -g @nrwl/cli
 ```
 
 Note: [This article suggests](https://dev.to/stereobooster/typescript-monorepo-for-react-project-3cpa) using yarn instead of npm in a monorepo because it supports workspaces to link cross-dependencies.
+
+## Project history
+
+The customer-portal app was created while following along with Duncan Hunter's [Workshop: Enterprise Angular applications with NgRx and Nx](https://duncanhunter.gitbook.io/enterprise-angular-applications-with-ngrx-and-nx/).
+
+The completed source code can be found [here](https://github.com/duncanhunter/workshop-enterprise-angular-applications-with-ngrx-and-nx-cli-only).
+
+At the end of the [Adding NgRx to the customer portal](#adding-NgRx-to-the-customer-portal) section, just after completing the app, some kind of versioning error killed the app.  The code is more that two years old, and changes in NgRx and possibly RxJS understandably will arise without taking great care of the code.
+
+The error encountered is:
+
+```bash
+>ng serve customer-portal
+Object prototype may only be an Object or null: undefined
+TypeError: Object prototype may only be an Object or null: undefined
+```
+
+The following command should update Angular and other dependencies:
+
+```bash
+yarn add @nrwl/angular
+...
+gyp ERR! configure error
+gyp ERR! stack Error: Command failed: C:\\Windows\\py.exe -c import sys; print \"%s.%s.%s\" % sys.version_info[:3];
+gyp ERR! stack   File \"<string>\", line 1
+gyp ERR! stack     import sys; print \"%s.%s.%s\" % sys.version_info[:3];
+...
+gyp ERR! node -v v12.0.0
+success Saved lockfile.
+success Saved 2 new dependencies.
+info Direct dependencies
+└─ @nrwl/angular@9.2.2
+info All dependencies
+├─ @nrwl/angular@9.2.2
+└─ jasmine-marbles@0.6.0
+```
+
+But this doesn't help the situation.  And there are breaking changes between Angular 7 and 9, so more work would have to be put into upgrading this project.
+
+But since what we really want is to use this workshop to create a step by step guide for creating a generic feature that will include NgRx.
+
+Starting with a current workspace and going through the workshop accounting for breaking changes, as well as paying attention to the unit tests to keep them passing will be the next goal.
+
+As a proof of concept, the lightweight counter example from the NgRx official docs was implemented and unit tested using Angular 9.2 with Nrwl 9.2 in [the Clades workspace](https://github.com/timofeysie/clades).  Next the same steps completed here will be played out there.
+
+In that project, we use ```nx test``` to run the unit tests.  However, this doesn't run in the Quallasuyu workspace.
+
+
+```bash
+> nx test
+internal/modules/cjs/loader.js:613
+    throw err;
+    ^
+Error: Cannot find module '@nrwl/workspace/src/command-line/supported-nx-commands'
+Require stack:
+- C:\Users\timof\repos\timofeysie\quallasuyu\node_modules\@nrwl\cli\lib\init-local.js
+```
+
+Tried this:
+
+```bash
+> yarn add global @nrwl/workspace
+```
+
+Still same issue.  See work continuing on Clades for now.
 
 ## Adding NgRx to the customer portal
 
@@ -348,7 +415,8 @@ Why would we need this?  The name is a bit deceiving.  If you look at the produc
 </div>
 ```
 
-The real reson you need entity is that the above causes this classic error:
+The real reason you need entity is that the above causes this classic error:
+
 ```bash
 Cannot find a differ supporting object '[object Object]' of type 'object'. NgFor only supports binding to Iterables such as Arrays.
 ```
@@ -495,6 +563,37 @@ npm run dep-graph
 ```
 
 Then, the 18 step guide is done.  No thank you, no debrief.  Nothing.  Feeling like I can contribute to this subject on my own now.  Might try and write a blog about the RxJs used in the effects which is difficult to read for someone who may not be so familiar with the subject.
+
+A note on the current system version used during creation of this project:
+
+```bash
+Angular CLI: 7.3.1
+Node: 12.0.0
+OS: win32 x64
+Angular: 7.2.13
+... common, compiler, core, forms, language-service
+... platform-browser, platform-browser-dynamic, router
+
+Package                           Version
+-----------------------------------------------------------
+@angular-devkit/architect         0.901.0
+@angular-devkit/build-angular     0.13.8
+@angular-devkit/build-optimizer   0.13.8
+@angular-devkit/build-webpack     0.901.0
+@angular-devkit/core              9.1.0
+@angular-devkit/schematics        7.3.1
+@angular/animations               7.2.16
+@angular/cdk                      7.3.7
+@angular/cli                      7.3.1
+@angular/compiler-cli             9.1.1
+@angular/flex-layout              7.0.0-beta.24
+@angular/material                 7.3.7
+@schematics/angular               7.3.1
+@schematics/update                0.13.1
+rxjs                              6.3.3
+typescript                        3.2.2
+webpack                           4.42.0
+```
 
 ## NgRx and Nx
 
