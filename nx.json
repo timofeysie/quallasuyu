@@ -70,6 +70,13 @@
     },
     "products": {
       "tags": ["products"]
+    },
+    "ionic-sam": {
+      "tags": []
+    },
+    "ionic-sam-e2e": {
+      "tags": [],
+      "implicitDependencies": ["ionic-sam"]
     }
   }
 }

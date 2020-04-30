@@ -914,10 +914,9 @@ ng test api // test the app
 
 Node server listens on http://localhost:3333/api
 
+## The @nxtend/ionic-react plugin
 
-## @nxtend/ionic-react
-
-Trying out the basics [from the docs](https://duncanhunter.gitbook.io/enterprise-angular-applications-with-ngrx-and-nx/2-creating-an-nx-workspace)
+Trying out the [Ionic/React plugin](https://github.com/devinshoemaker/nxtend) featured in a [recent blog by the NrWl team](https://blog.nrwl.io/computation-caching-out-of-the-box-revamped-docs-community-plugins-and-more-in-nx-9-2-e97801116e02).
 
 ```bash
 yarn add --dev @nxtend/ionic-react
@@ -928,17 +927,47 @@ Require stack:
 - C:\Users\timof\AppData\Local\Yarn\Data\global\node_modules\@nrwl\cli\bin\nx.js
     at Function.Module._resolveFilename (internal/modules/cjs/loader.js:610:15)
     at Function.Module._load (internal/modules/cjs/loader.js:526:27)
+```
 
+Also tried with npx:
+
+```bash
 npx nx generate @nxtend/ionic-react:application ionic-sam
-
-ng serve ionic-sam
-Project 'ionic-sam' does not support the 'serve' target.
-Error: Project 'ionic-sam' does not support the 'serve' target.
 ```
 
 After this there is no output, but the project is not created.
 
 Opened [this issue](https://github.com/devinshoemaker/nxtend/issues/83) with the plugin for this.
+
+The repo maintainers said don't use npx.  Doing this seems to work:
+
+```bash
+yarn add @nrwl/workspace.
+yarn add @nxtend/ionic-react
+nx generate @nxtend/ionic-react:application ionic-sam
+```
+
+Still seeing the node-sass warning:
+
+```bash
+warning Error running install script for optional dependency: "C:\\Users\\timof\\repos\\timofeysie\\quallasuyu\\node_modules\\@angular-devkit\\build-angular\\node_modules\\node-sass: Command failed.
+Exit code: 1
+Command: node scripts/build.js
+Arguments:
+Directory: C:\\Users\\timof\\repos\\timofeysie\\quallasuyu\\node_modules\\@angular-devkit\\build-angular\\node_modules\\node-sass
+```
+
+However, the serve fails:
+
+```bash
+ng serve ionic-sam
+Schema validation failed with the following errors:
+  Data path ".builders['build']" should have required property 'class'.
+Error: Schema validation failed with the following errors:
+  Data path ".builders['build']" should have required property 'class'.
+    at MergeMapSubscriber.project (C:\Users\timof\repos\timofeysie\quallasuyu\node_modules\@angular\cli\node_modules\@angular-devkit\core\src\workspace\workspace.js:215:42)
+    at MergeMapSubscriber._tryNext (C:\Users\timof\repos\timofeysie\quallasuyu\node_modules\rxjs\internal\operators\mergeMap.js:69:27)
+```
 
 ## Nrwl 9.1
 
