@@ -57,7 +57,7 @@
     "@nrwl/nx": "7.8.0",
     "@nrwl/workspace": "^9.2.3",
     "angular-in-memory-web-api": "^0.8.0",
-    "auth0-js": "^9.10.2",
+    "auth0-js": "^9.13.2",
     "axios": "^0.18.0",
     "core-js": "^2.5.4",
     "express-jwt": "^5.3.1",
